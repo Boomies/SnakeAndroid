@@ -1,7 +1,7 @@
 package pt.isel.poo.snakeandroid.model;
 
 /**
- * Created by Gon�alo Veloso on 31-10-2015.
+ * Created by Gonçalo Veloso e André Carvalho on 31-10-2015.
  */
 public class Vertebrae extends Snake {
     public Vertebrae(int x, int y) {
@@ -9,7 +9,7 @@ public class Vertebrae extends Snake {
     }
 
     /**
-     * Override do m�todo toString().
+     * Override do método toString().
      * @return "#".
      */
     @Override

@@ -1,7 +1,7 @@
 package pt.isel.poo.snakeandroid.model;
 
 /**
- * Created by Gon�alo Veloso on 27-10-2015.
+ * Created by Gonçalo Veloso e André Carvalho on 27-10-2015.
  */
 public class Snake extends Obstacle {
     public Snake(int x, int y) {
@@ -9,8 +9,8 @@ public class Snake extends Obstacle {
     }
 
     /**
-     * Obt�m as coordenadas de um determinado destino.
-     * @param dir Dire��o.
+     * Obtém as coordenadas de um determinado destino.
+     * @param dir Direção.
      * @return Nova coordenada que corresponde ao destino.
      */
     public Coordinate getDest(Dir dir) {

@@ -1,9 +1,7 @@
 package pt.isel.poo.snakeandroid.model;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
@@ -30,7 +28,7 @@ public class Level {
     /**
      * Getter de title.
      *
-     * @return O t�tulo do n�vel.
+     * @return O título do nível.
      */
     public String getTitle() {
         return title;
@@ -48,50 +46,51 @@ public class Level {
     /**
      * Mexe a cobra.
      *
-     * @param dir Dire��o para onde a cobra se ir� mexer.
+     * @param dir Direção para onde a cobra se irá mexer.
      */
     public void move(Dir dir) {
-        Coordinate dest = snake.getDest(dir); // Coordenada correspondente ao destino, de acordo com a dire��o.
-        Coordinate current = snake.cur; // Coordenada onde a cabe�a est� antes de se movimentar.
-        if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espa�o vazio...
+        Coordinate dest = snake.getDest(dir); // Coordenada correspondente ao destino, de acordo com a direção.
+        Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
+        if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
             moveTo(current.x, current.y, dest); // ...a cobra move-se para o destino sem problemas.
-        } else if (snake.eat(board[dest.x][dest.y])) // Se for poss�vel a cobra comer o elemento na coordenada destino...
+        } else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
         {
-            snakeGrow();    // ...ent�o come e cresce.
+            snakeGrow();    // ...então come e cresce.
+            appleGenerator();
             moveTo(current.x, current.y, dest);
         }
-        if (currentApples == 0) { // Se n�o existirem mais ma��s no n�vel...
-            if (maxApples > 0) appleGenerator(); /* ...e se ainda existirem ma��s para comer antes de o n�vel acabar,
-                                                   � gerada uma nova ma��. */
+        if (currentApples == 0) { // Se não existirem mais maçãs no nível...
+            if (maxApples > 0) appleGenerator(); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
+                                                   é gerada uma nova maçã. */
             else {
                 endGame();
-            } // Caso contr�rio, o jogo acaba.
+            } // Caso contrório, o jogo acaba.
         }
     }
 
     /**
-     * Gera uma nova ma�� num s�tio aleat�rio do n�vel.
+     * Gera uma nova maçã num sítio aleatório do nível.
      */
     private void appleGenerator() {
         Random rnd = new Random(); // Novo objecto random.
-        int rndX = rnd.nextInt(Coordinate.maxColumns); // Linha aleat�ria.
-        int rndY = rnd.nextInt(Coordinate.maxLines); // Coluna aleat�ria.
-        while (!(board[rndX][rndY] instanceof Space)) { // Enquanto os valores gerados n�o corresponderem a um espa�o...
-            rndX = rnd.nextInt(Coordinate.maxColumns); // ...s�o gerados valores novos.
+        int rndX = rnd.nextInt(Coordinate.maxColumns); // Linha aleatória.
+        int rndY = rnd.nextInt(Coordinate.maxLines); // Coluna aleatória.
+        while (!(board[rndX][rndY] instanceof Space)) { // Enquanto os valores gerados não corresponderem a um espaço...
+            rndX = rnd.nextInt(Coordinate.maxColumns); // ...são gerados valores novos.
             rndY = rnd.nextInt(Coordinate.maxLines);
         }
-        board[rndX][rndY] = new Apple(rndX, rndY); // A nova ma�� � colocada no local definido por rndX e rndY.
-        elementListener.show(board[rndX][rndY], rndX, rndY); // � necess�rio que o view mostre essa nova ma��.
-        currentApples++; // O n�mero de ma��s existente no n�vel � incrementado.
+        board[rndX][rndY] = new Apple(rndX, rndY); // A nova maçã é colocada no local definido por rndX e rndY.
+        elementListener.show(board[rndX][rndY], rndX, rndY); // é necessário que o view mostre essa nova maçã.
+        currentApples++; // O número de maçãs existente no nível é incrementado.
     }
 
     /**
      * Cresce a cobra.
      */
     public void snakeGrow() {
-        maxApples--; //Decrementa o n�mero m�ximo de ma��s.
-        currentApples--; //Decrementa o n�mero de ma��s existente no n�vel.
-        for (int i = increment; i > 0; i--) { // Cria novas v�rtebras de acordo com o valor em increment.
+        maxApples--; //Decrementa o número máximo de maçãs.
+        currentApples--; //Decrementa o número de maçãs existente no nivel.
+        for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
             members.addLast(new Vertebrae(members.getLast().cur.x, members.getLast().cur.y));
         }
     }
@@ -106,7 +105,7 @@ public class Level {
     }
 
     /**
-     * Verifica se a cobra est� morta.
+     * Verifica se a cobra está morta.
      *
      * @return O estado da cobra.
      */
@@ -131,84 +130,9 @@ public class Level {
     }
 
     /**
-     * L� um n�vel atrav�s de um ficheiro input.
+     * Limpa o nível, preenchedo-o com Spaces.
      *
-     * @param file Ficheiro a ser lido.
-     * @throws IOException Excep��o que pode surgir.
-     */
-    public void load(InputStream file){
-        BufferedReader reader = new BufferedReader(new InputStreamReader(file));
-        String aux;
-        String[] array;
-        Scanner io;
-
-        try {
-            title = reader.readLine(); // A primeira linha corresponde ao t�tulo do n�vel.
-        } catch (IOException e) {
-            System.out.println("Erro a ler título.");;
-        }
-
-        try {
-            aux = reader.readLine();
-
-        io = new Scanner(aux); //aux corresponde agora � segunda linha, e io l� aux.
-
-        /* O primeiro integer da segunda linha corresponde ao n�mero m�ximo de linhas do n�vel. */
-        Coordinate.maxLines = Integer.parseInt(io.next());
-        io.next(); // Passa � frente o 'x' entre os valores que s�o importantes.
-        /* O segundo integer da segunda linha corresponde ao n�mero m�ximo de colunas do n�vel */
-        Coordinate.maxColumns = Integer.parseInt(io.next());
-        } catch (IOException e) {
-            System.out.println("Erro a ler linha.");
-        }
-
-        try {
-            aux = reader.readLine();
-        io = new Scanner(aux); //aux corresponde agora � terceira linha, e io l� o aux.
-        increment = Integer.parseInt(io.next()); // O primeiro integer da terceira linha corresponde a increment.
-        maxApples = Integer.parseInt(io.next()); // O segundo integer da terceira linha corresponde ao n�mero m�ximo de ma��s.
-        } catch (IOException e) {
-            System.out.println("Erro ao ler linha.");
-        }
-
-        board = new Element[Coordinate.maxLines][Coordinate.maxColumns]; // Um novo n�vel � criado de acordo com os valores obtidos para maxLines e maxColumns.
-        clearBoard(board);  // Esse novo n�vel � limpo.
-        // Este for ir� percorrer a array bidimensional do n�vel e preenche-la com os objectos certos.
-        for (int line = 0; line < Coordinate.maxLines; line++) {
-            try {
-                aux = reader.readLine();
-            array = aux.split(""); // Separa cada char de modo a este ser lido individualmente.
-            for (int column = 0; column < Coordinate.maxColumns; column++) {
-                switch (array[column]) {
-                    case "X":
-                        board[line][column] = new Wall(line, column);
-                        break;
-                    case "@":
-                        board[line][column] = snake = new Head(line, column);
-                        members.add(snake);
-                        break;
-                    case "A":
-                        board[line][column] = new Apple(line, column);
-                        currentApples++;
-                        break;
-                    case " ":
-                        board[line][column] = new Space(line, column);
-                        break;
-                }
-            }
-            } catch (IOException e) {
-                System.out.println("Erro ao ler linha.");
-            }
-        }
-        for (int i = increment; i > 0; i--) { // Cria novas v�rtebras de acordo com o valor em increment.
-            members.addLast(new Vertebrae(members.getLast().cur.x, members.getLast().cur.y));
-        }
-    }
-
-    /**
-     * Limpa o n�vel, preenchedo-o com Spaces.
-     *
-     * @param board N�vel a ser limpo.
+     * @param board Nível a ser limpo.
      */
     private void clearBoard(Element[][] board) {
         for (int i = 0; i < Coordinate.maxLines; i++) {
@@ -219,9 +143,63 @@ public class Level {
     }
 
     /**
-     * M�todo para debugging que imprime o board na consola.
+     * Lé um nivel através de um ficheiro input.
+     *
+     * @param file Ficheiro a ser lido.
+     * @throws IOException Excepção que pode surgir.
      */
-    public void printBoard() {
+    public void load(InputStream file) throws IOException {
+        Scanner io = new Scanner(file);
+        int count = 1;
+
+        while(io.hasNextLine()) {
+            if (count == 1) {
+                title = io.nextLine();
+            } else if (count == 2) {
+                Coordinate.maxLines = Integer.parseInt(io.next());
+                io.next(); //Passa o 'X'
+                Coordinate.maxColumns = Integer.parseInt(io.next());
+
+                //Setup do tabuleiro
+                board = new Element[Coordinate.maxLines][Coordinate.maxColumns];
+                clearBoard(board);
+            } else if (count == 3) {
+                increment = Integer.parseInt(io.next());
+                maxApples = Integer.parseInt(io.next());
+                io.nextLine();
+            } else {
+                char[] array;
+                for (int i = 0; i < Coordinate.maxLines; i++) {
+                    String line = io.nextLine();
+                    array = line.toCharArray();
+                    for (int j = 0; j < array.length; j++) {
+                        switch (array[j]) {
+                            case 'X':
+                                board[i][j] = new Wall(i, j);
+                                break;
+                            case '@':
+                                board[i][j] = snake = new Head(i, j);
+                                members.add(snake);
+                                break;
+                            case 'A':
+                                board[i][j] = new Apple(i, j);
+                                currentApples++;
+                                break;
+                            case ' ':
+                                board[i][j] = new Space(i, j);
+                                break;
+                        }
+                    }
+                }
+            }
+            count++;
+        }
+        for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
+            members.addLast(new Vertebrae(members.getLast().cur.x, members.getLast().cur.y));
+        }
+    }
+
+    public void printBoard(){
         for (int i = 0; i < Coordinate.maxLines; i++) {
             for (int j = 0; j < Coordinate.maxColumns; j++) {
                 System.out.print(board[i][j]);
@@ -229,29 +207,28 @@ public class Level {
             System.out.println();
         }
     }
-
     /**
      * Move a cobra para o destino.
      *
-     * @param posX Linha onde a cobra est� actualmente.
-     * @param posY Coluna onde a cobra est� actualmente.
+     * @param posX Linha onde a cobra está actualmente.
+     * @param posY Coluna onde a cobra está actualmente.
      * @param dest Coordenada destino.
      */
     public void moveTo(int posX, int posY, Coordinate dest) {
-        Coordinate lastCur = members.getLast().cur; // Guarda a posi��o actual do �ltimo elemento da cobra.
-        board[dest.x][dest.y] = board[posX][posY]; // Coloca a cabe�a na coordenada destino.
-        board[lastCur.x][lastCur.y] = new Space(lastCur.x, lastCur.y); // Na posi��o antiga da cauda est� agora um objecto Space.
-        board[posX][posY] = new Vertebrae(posX, posY); // Cria uma nova vertebra na coordenada antiga da cabe�a.
-        members.add(1, (Snake) board[posX][posY]); // Coloca o �ltimo elemento da lista na coordenada antiga da cabe�a.
-        members.removeLast(); // Remove o �ltimo elemento da cobra.
-        // Actualiza as posi��es de cada v�rtebra a partir da segunda.
+        Coordinate lastCur = members.getLast().cur; // Guarda a posição actual do último elemento da cobra.
+        board[dest.x][dest.y] = board[posX][posY]; // Coloca a cabeça na coordenada destino.
+        board[lastCur.x][lastCur.y] = new Space(lastCur.x, lastCur.y); // Na posição antiga da cauda está agora um objecto Space.
+        board[posX][posY] = new Vertebrae(posX, posY); // Cria uma nova vertebra na coordenada antiga da cabeça.
+        members.add(1, (Snake) board[posX][posY]); // Coloca o último elemento da lista na coordenada antiga da cabeça.
+        members.removeLast(); // Remove o último elemento da cobra.
+        // Actualiza as posições de cada vértebra a partir da segunda.
         for (int i = 2; i < members.size(); i++) {
             board[members.get(i).cur.x][members.get(i).cur.y] = members.get(i);
         }
-        snake.cur = dest; // A posi��o actual da cobra � agora a coordenada destino.
+        snake.cur = dest; // A posição actual da cobra é agora a coordenada destino.
         elementListener.show(board[lastCur.x][lastCur.y], lastCur.x, lastCur.y); // O view mostra o ultimo elemento da lista.
         elementListener.show(board[dest.x][dest.y], dest.x, dest.y); // O view mostra o elemento na coordenada destino.
-        elementListener.show(board[posX][posY], posX, posY); // O view mostra o elemento que est� agora na posi��o antiga da cobra.
+        elementListener.show(board[posX][posY], posX, posY); // O view mostra o elemento que está agora na posição antiga da cobra.
     }
 
     public Element getElement(int l, int c) {

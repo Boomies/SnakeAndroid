@@ -2,39 +2,39 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\exploded-aar\SnakeAndroid\TilePanel\unspecified\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="20bb759219a5dfa57f4e5a889de5f687d1d55eba">
-        <dex dex="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\pre-dexed\debug\classes-78a5a45763845d764beebd504bee9ed4aa3c4dc1.jar" />
-    </item>
-    <item
-        jar="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1-471c9a12834563562aafe5330ea49bd249173814.jar" />
-    </item>
-    <item
-        jar="C:\Users\user\AppData\Local\Android\sdk1\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-3e78aa1bd5c1a50dd5ea1c641d7b14338aca1518.jar" />
-    </item>
-    <item
-        jar="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jar="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
         jumboMode="false"
         revision="23.0.2"
         sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\pre-dexed\debug\classes-d95a129652ca258d45060d56d90de29afc07e009.jar" />
+        <dex dex="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/pre-dexed/debug/classes-9d5dad929276c501663b5189a2459b2ae66c2432.jar" />
     </item>
     <item
-        jar="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jar="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/exploded-aar/SnakeAndroid/TilePanel/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="c769765e3749cbd310d80ad6d554acd9911fd6d9">
+        <dex dex="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/pre-dexed/debug/classes-eb1a33cf83f6f7ebe690a2afdac3033211958f80.jar" />
+    </item>
+    <item
+        jar="/Users/Andre/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.1-92dafc0fcbee320e26aed13c91e70b1ed78fb302.jar" />
+    </item>
+    <item
+        jar="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
         jumboMode="false"
         revision="23.0.2"
         sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="C:\Users\user\Documents\2015I\POO\SnakeAndroid\app\build\intermediates\pre-dexed\debug\classes-74b661f9905af5d9522b4dfdcad53f74cc5693ef.jar" />
+        <dex dex="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/pre-dexed/debug/classes-96f529de817a797f654e9a58c3a71d4fc4dc2829.jar" />
+    </item>
+    <item
+        jar="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="/Users/Andre/Documents/SnakeAndroid/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.1-33dec7bdf69a1229ca527ea8a1f6755bc15f1a5e.jar" />
     </item>
 
 </items>

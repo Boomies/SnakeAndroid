@@ -5,7 +5,5 @@ package pt.isel.poo.snakeandroid.model;
  */
 public interface ElementListener {
     void show(Element e, int X, int Y);
-    void repaint(Level level);
-
     void showDeadSnake(int x, int y);
 }
