@@ -15,4 +15,11 @@ public enum Dir {
         this.dX = dX;
         this.dY = dY;
     }
+    public static Dir getOppositeDir(Dir d){
+        if (d == Dir.DOWN) return Dir.UP;
+        if (d == Dir.UP) return Dir.DOWN;
+        if (d == Dir.LEFT) return Dir.RIGHT;
+        if (d == Dir.RIGHT) return Dir.LEFT;
+        return null;
+    }
 }

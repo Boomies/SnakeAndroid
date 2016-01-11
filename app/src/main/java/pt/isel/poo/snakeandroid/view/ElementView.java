@@ -34,7 +34,7 @@ public class ElementView implements Tile{
     @Override
     public void draw(Canvas canvas, int side) {
         if (element instanceof Head) { paint.setColor(Color.BLUE); canvas.drawCircle(side/2, side/2, side/2, paint); }
-        if (element instanceof Vertebrae) { paint.setColor(Color.RED); canvas.drawCircle(side/2, side/2, side/2, paint); }
+        if (element instanceof Vertebrae) { paint.setColor(Color.GREEN); canvas.drawCircle(side/2, side/2, side/2, paint); }
         if (element instanceof Apple) { paint.setColor(Color.RED); canvas.drawRect(0, 0, side, side, paint); }
         if (element instanceof Wall) { paint.setColor(Color.BLUE); canvas.drawRect(0, 0, side, side, paint); }
     }

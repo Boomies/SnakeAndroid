@@ -1,5 +1,6 @@
 package pt.isel.poo.snakeandroid.model;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -233,5 +234,8 @@ public class Level {
 
     public Element getElement(int l, int c) {
         return board[l][c];
+    }
+
+    public void saveState(DataOutputStream data) {
     }
 }

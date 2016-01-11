@@ -3,7 +3,15 @@ package pt.isel.poo.snakeandroid;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import pt.isel.poo.snakeandroid.model.*;
@@ -12,7 +20,7 @@ import pt.isel.poo.tile.OnBeatListener;
 import pt.isel.poo.tile.OnTileTouchListener;
 import pt.isel.poo.tile.TilePanel;
 
-public class MainActivity extends AppCompatActivity implements OnTileTouchListener, OnBeatListener, ElementListener {
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener, OnTileTouchListener, OnBeatListener, ElementListener {
     private TextView levelTitle;
     private Level level;
     private static final int STEP_TIME = 500;
@@ -20,12 +28,15 @@ public class MainActivity extends AppCompatActivity implements OnTileTouchListen
     Dir aux = dir;
     private TilePanel panel;
     private int COLS, LINES;
+    LinearLayout topView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        topView = (LinearLayout) findViewById(R.id.topView);
+        topView.setOnTouchListener(ontouchlistener);
         level = new Level();
         loadLevel("level01.txt");
 
@@ -42,13 +53,31 @@ public class MainActivity extends AppCompatActivity implements OnTileTouchListen
             for (int c = 0; c < COLS; c++)
                 panel.setTile(c,l,new ElementView(this,level.getElement(l,c)));
 
-        panel.setListener(this);
+        panel.setOnTouchListener(ontouchlistener);
         level.setElementListener(this);
         panel.setHeartbeatListener(STEP_TIME, this);
 
     }
 
 
+    View.OnTouchListener ontouchlistener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            float xFrom = 0, yFrom = 0, xTo, yTo;
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    xFrom = event.getX();
+                    yFrom = event.getY();
+                case MotionEvent.ACTION_MOVE:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    xTo = event.getX();
+                    yTo = event.getY();
+                    return changeDir((int) xFrom, (int) yFrom, (int) xTo, (int) yTo);
+            }
+            return false;
+        }
+    };
     private boolean loadLevel(String fileName) {
         InputStream file = null;
         try {
@@ -75,29 +104,24 @@ public class MainActivity extends AppCompatActivity implements OnTileTouchListen
 
     @Override
     public boolean onDrag(int xFrom, int yFrom, int xTo, int yTo) {
-        if(xFrom > xTo){
-            aux = Dir.LEFT;
-            return true;
-        }
-        else if(xFrom < xTo){
-            aux = Dir.RIGHT;
-            return true;
-        }
-        if(yFrom > yTo){
-            aux = Dir.UP;
-            return true;
-        }
-        else if(yFrom < yTo){
-            aux = Dir.DOWN;
-            return true;
-        }
+        return true;
+    }
 
-        return false;
+    private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {
+        double xDif = Math.abs(xTo - xFrom), yDif = Math.abs(yTo - yFrom);
+        System.out.println(aux);
+        if(xDif >= yDif) aux = (xFrom > xTo ? Dir.LEFT : Dir.RIGHT);
+        else aux = (yFrom > yTo ? Dir.UP : Dir.DOWN);
+        System.out.println(aux);
+        if (aux == dir || Dir.getOppositeDir(dir) == aux) return false;
+        else {
+            dir = aux;
+            return true;
+        }
     }
 
     @Override
     public void onDragEnd(int x, int y) {
-        dir = aux;
     }
 
     @Override
@@ -110,10 +134,6 @@ public class MainActivity extends AppCompatActivity implements OnTileTouchListen
         if(!level.isOver()){
             level.move(dir);
         }
-        //Talvez mostrar uma mensagem ou passar para o proximo nivel?
-        else{
-
-        }
     }
 
     @Override
@@ -123,6 +143,32 @@ public class MainActivity extends AppCompatActivity implements OnTileTouchListen
 
     @Override
     public void showDeadSnake(int x, int y) {
+            Toast.makeText(this,"GAME OVER", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        ByteArrayOutputStream array = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(array);
+        level.saveState(data);
+        savedInstanceState.putByteArray("status", array.toByteArray());
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        float xFrom = 0, yFrom = 0, xTo, yTo;
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                xFrom = event.getX();
+                yFrom = event.getY();
+            case MotionEvent.ACTION_MOVE:
+                return true;
+            case MotionEvent.ACTION_UP:
+                xTo = event.getX();
+                yTo = event.getY();
+                changeDir((int) xFrom, (int) yFrom, (int) xTo, (int) yTo);
+        }
+        return false;
     }
 }
