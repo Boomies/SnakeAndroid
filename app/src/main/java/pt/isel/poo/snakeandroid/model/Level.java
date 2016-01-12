@@ -1,5 +1,6 @@
 package pt.isel.poo.snakeandroid.model;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,17 +9,17 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
- * Created by Gon�alo Veloso on 27-10-2015.
+ * Created by Gonçalo Veloso e André Carvalho on 27-10-2015.
  */
 public class Level {
-    private String title;   //T�tulo do n�vel.
+    private String title;   //Título do nível.
     private ElementListener elementListener;    //Interface a ser implementada.
-    private boolean snakeDead, over;    //Booleans que determinam se a cobra est� morta ou se o n�vel est� acabado.
-    public Element[][] board;   //Array bidimensional. Corresponde ao n�vel do jogo.
-    private Head snake; //Inicializa��o de um objecto de cabe�a da cobra.
-    private int increment;    //N�mero de v�rtebras iniciais e a serem adicionadas quando a cobra come uma ma��.
-    private int maxApples, currentApples; //N�mero de ma��s m�ximas num n�vel e n�mero de ma��s existentes no n�vel.
-    LinkedList<Snake> members = new LinkedList<Snake>(); //Lista que ir� conter a cobra.
+    private boolean snakeDead, over;    //Booleans que determinam se a cobra está morta ou se o nível está acabado.
+    public Element[][] board;   //Array bidimensional. Corresponde ao nível do jogo.
+    private Head snake; //Inicialização de um objecto de cabeça da cobra.
+    private int increment;    //Número de vértebras iniciais e a serem adicionadas quando a cobra come uma maçã.
+    private int maxApples, currentApples; //Número de maçãs máximas num nível e número de maçãs existentes no nível.
+    LinkedList<Snake> members = new LinkedList<Snake>(); //Lista que irá conter a cobra.
 
     public Level() {
         Element.lvl = this;
@@ -74,11 +75,11 @@ public class Level {
      */
     private void appleGenerator() {
         Random rnd = new Random(); // Novo objecto random.
-        int rndX = rnd.nextInt(Coordinate.maxColumns); // Linha aleatória.
-        int rndY = rnd.nextInt(Coordinate.maxLines); // Coluna aleatória.
+        int rndX = rnd.nextInt(Coordinate.maxLines); // Linha aleatória.
+        int rndY = rnd.nextInt(Coordinate.maxColumns); // Coluna aleatória.
         while (!(board[rndX][rndY] instanceof Space)) { // Enquanto os valores gerados não corresponderem a um espaço...
-            rndX = rnd.nextInt(Coordinate.maxColumns); // ...são gerados valores novos.
-            rndY = rnd.nextInt(Coordinate.maxLines);
+            rndX = rnd.nextInt(Coordinate.maxLines); // ...são gerados valores novos.
+            rndY = rnd.nextInt(Coordinate.maxColumns);
         }
         board[rndX][rndY] = new Apple(rndX, rndY); // A nova maçã é colocada no local definido por rndX e rndY.
         elementListener.show(board[rndX][rndY], rndX, rndY); // é necessário que o view mostre essa nova maçã.
@@ -118,6 +119,7 @@ public class Level {
      * Mata a cobra.
      */
     public void killSnake() {
+        //printBoard();
         snakeDead = true;
         elementListener.showDeadSnake(snake.cur.x, snake.cur.y);
         endGame();
@@ -237,5 +239,11 @@ public class Level {
     }
 
     public void saveState(DataOutputStream data) {
+
+    }
+
+    public void loadState(DataInputStream data) {
+
+
     }
 }

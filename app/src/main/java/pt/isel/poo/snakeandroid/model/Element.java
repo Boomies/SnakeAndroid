@@ -5,7 +5,7 @@ package pt.isel.poo.snakeandroid.model;
  */
 public class Element {
     Coordinate cur; // Coordenada actual do elemento.
-    public static Level lvl; // N�vel ao qual este elemento est� ligado.
+    public static Level lvl; // Nível ao qual este elemento est� ligado.
 
     /**
      * Construtor Element. Cria um elemento na linha x e coluna y.

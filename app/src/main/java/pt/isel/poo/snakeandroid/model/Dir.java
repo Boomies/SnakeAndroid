@@ -1,11 +1,11 @@
 package pt.isel.poo.snakeandroid.model;
 
 /**
- * Created by Gon�alo Veloso on 27-10-2015.
+ * Created by Gonçalo Veloso e André Carvalho on 27-10-2015.
  */
 public enum Dir {
     /**
-     * Cada dire��o corresponde a determinadas altera��es �s coordenadas actuais de um objecto.
+     * Cada direção corresponde a determinadas alterações às coordenadas actuais de um objecto.
      */
     DOWN(1,0), LEFT(0,-1), RIGHT(0,1), UP(-1,0);
 
@@ -15,6 +15,7 @@ public enum Dir {
         this.dX = dX;
         this.dY = dY;
     }
+
     public static Dir getOppositeDir(Dir d){
         if (d == Dir.DOWN) return Dir.UP;
         if (d == Dir.UP) return Dir.DOWN;

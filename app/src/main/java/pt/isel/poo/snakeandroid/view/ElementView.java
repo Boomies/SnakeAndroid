@@ -16,7 +16,7 @@ import pt.isel.poo.snakeandroid.model.Wall;
 import pt.isel.poo.tile.Tile;
 
 /**
- * Created by user on 04-01-2016.
+ * Created by Gonçalo Veloso e André Carvalho on 04-01-2016.
  */
 public class ElementView implements Tile{
     private Element element;
