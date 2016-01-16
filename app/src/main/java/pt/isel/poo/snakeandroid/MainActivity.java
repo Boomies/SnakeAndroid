@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +24,7 @@ import pt.isel.poo.tile.TilePanel;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, OnTileTouchListener, OnBeatListener, ElementListener {
     private TextView levelTitle;
     private Level level;
-    private static final int STEP_TIME = 400;
+    private static final int STEP_TIME = 1000;
     Dir dir = Dir.UP;
     Dir aux = dir;
     private TilePanel panel;
@@ -34,29 +36,55 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         topView = (LinearLayout) findViewById(R.id.topView);
-        topView.setOnTouchListener(this);
-        level = new Level();
-        loadLevel("level01.txt");
-
-        levelTitle = (TextView) findViewById(R.id.levelTitle);
-        levelTitle.setText(level.getTitle());
-
         panel = (TilePanel) findViewById(R.id.levelPanel);
+        levelTitle = (TextView) findViewById(R.id.levelTitle);
+
+
+        level = new Level();
+
+        if(savedInstanceState != null) {
+            //noinspection ConstantConditions
+            ByteArrayInputStream array = new ByteArrayInputStream(savedInstanceState.getByteArray("savestate"));
+            DataInputStream data = new DataInputStream(array);
+
+            //noinspection ConstantConditions
+            switch(savedInstanceState.getString("direction")){
+                case "LEFT":
+                    dir = Dir.LEFT;
+                    break;
+                case "RIGHT":
+                    dir = Dir.RIGHT;
+                    break;
+                case "UP":
+                    dir = Dir.UP;
+                    break;
+                case "DOWN":
+                    dir = Dir.DOWN;
+                    break;
+            }
+
+            level.loadState(data);
+        }else{
+            loadLevel("level01.txt");
+        }
+
         COLS = Coordinate.maxColumns;
         LINES = Coordinate.maxLines;
-        panel.setSize(COLS, LINES);
+
+        levelTitle.setText(level.getTitle());
+        topView.setOnTouchListener(this);
         panel.setBackgroundColor(Color.BLACK);
-
-        for (int l = 0; l < LINES; l++)
-            for (int c = 0; c < COLS; c++)
-                panel.setTile(c, l, new ElementView(this,level.getElement(l,c)));
-
+        panel.setSize(COLS, LINES);
         panel.setOnTouchListener(this);
         level.setElementListener(this);
         panel.setHeartbeatListener(STEP_TIME, this);
 
+        for (int l = 0; l < LINES; l++) {
+            for (int c = 0; c < COLS; c++){
+                panel.setTile(c, l, new ElementView(this, level.getElement(l, c)));
+            }
+        }
     }
 
     private boolean loadLevel(String fileName) {
@@ -111,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void showDeadSnake(int x, int y) {
-            Toast.makeText(this,"GAME OVER", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Game Over", Toast.LENGTH_SHORT).show();
     }
 
     private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {
@@ -130,11 +158,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
-        super.onSaveInstanceState(savedInstanceState);
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(array);
         level.saveState(data);
-        savedInstanceState.putByteArray("status", array.toByteArray());
+        savedInstanceState.putByteArray("savestate", array.toByteArray());
+
+        savedInstanceState.putString("direction", dir.name());
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -144,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             case MotionEvent.ACTION_DOWN:
                 xFrom = event.getX();
                 yFrom = event.getY();
+
             case MotionEvent.ACTION_MOVE:
                 return true;
 

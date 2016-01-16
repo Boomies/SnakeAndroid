@@ -18,6 +18,6 @@ public class Space extends Element {
      */
     @Override
     public String toString() {
-        return "_";
+        return " ";
     }
 }

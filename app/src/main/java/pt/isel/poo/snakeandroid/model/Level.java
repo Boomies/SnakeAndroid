@@ -53,9 +53,13 @@ public class Level {
     public void move(Dir dir) {
         Coordinate dest = snake.getDest(dir); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
+
+        //System.out.println(board[dest.x][dest.y]);
+
         if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
             moveTo(current.x, current.y, dest); // ...a cobra move-se para o destino sem problemas.
-        } else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
+        }
+        else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
         {
             snakeGrow();    // ...então come e cresce.
             appleGenerator();
@@ -65,6 +69,7 @@ public class Level {
             if (maxApples > 0) appleGenerator(); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
                                                    é gerada uma nova maçã. */
             else {
+                //printBoard();
                 endGame();
             } // Caso contrório, o jogo acaba.
         }
@@ -119,7 +124,7 @@ public class Level {
      * Mata a cobra.
      */
     public void killSnake() {
-        //printBoard();
+        printBoard();
         snakeDead = true;
         elementListener.showDeadSnake(snake.cur.x, snake.cur.y);
         endGame();
@@ -238,12 +243,115 @@ public class Level {
         return board[l][c];
     }
 
-    public void saveState(DataOutputStream data) {
+    public void saveState(DataOutputStream data){
 
+
+        try{
+            //Guardamos o titulo
+            data.writeUTF(this.getTitle());
+
+            //Guardamos as var isOver e SnakeDead
+            data.writeBoolean(this.isOver());
+            data.writeBoolean(this.isSnakeDead());
+
+            //Guardamos as maças
+            data.writeInt(currentApples);
+            data.writeInt(maxApples);
+
+            //Guardamos o incremento das vertebras
+            data.writeInt(this.increment);
+
+            data.writeInt(members.size() - 1);
+
+            //Guardamos o numero de linhas e colunas
+            data.writeInt(Coordinate.maxLines);
+            data.writeInt(Coordinate.maxColumns);
+
+            //Guardamos o tabuleiro
+            for(int i = 0; i < Coordinate.maxLines; i++){
+                for(int j = 0; j < Coordinate.maxColumns; j++){
+                   data.writeUTF(board[i][j].toString());
+
+                }
+            }
+
+            //Guardamos a nossa linkedlist -- Maybe it's not necessary
+
+
+        }catch (IOException e){
+            e.printStackTrace();
+
+        }finally {
+            try {
+                data.close();
+            }catch (IOException e) {
+                //Merda
+            }
+        }
     }
 
     public void loadState(DataInputStream data) {
+        try {
+            //Lemos o titulo
+            title = data.readUTF();
 
+            //Lemos o isOver e SnakeDead
+            over = data.readBoolean();
+            snakeDead = data.readBoolean();
 
+            //Lemos as maçãs
+            currentApples = data.readInt();
+            maxApples = data.readInt();
+
+            //Lemos o incremento das vertebras
+            increment = data.readInt();
+
+            int numero_vertebras = data.readInt();
+
+            //Lemos o numero de linhas e colunas
+            Coordinate.maxLines = data.readInt();
+            Coordinate.maxColumns = data.readInt();
+
+            //Lemos o tabuleiro
+            board = new Element[Coordinate.maxLines][Coordinate.maxColumns];
+
+            clearBoard(board);
+
+            for (int i = 0; i < Coordinate.maxLines; i++) {
+                for (int j = 0; j < Coordinate.maxColumns; j++) {
+                    switch (data.readUTF()) {
+                        case "d":
+                            board[i][j] = new Wall(i, j);
+                            break;
+                        case "@":
+                            board[i][j] = snake = new Head(i, j);
+                            members.add(snake);
+                            break;
+                        case "O":
+                            board[i][j] = new Apple(i, j);
+                            break;
+                        case " ":
+                            board[i][j] = new Space(i, j);
+                            break;
+                        default:
+                            board[i][j] = new Space(i, j);
+                            break;
+                    }
+                }
+            }
+
+            for (int i = numero_vertebras; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
+                members.addLast(new Vertebrae(members.getLast().cur.x, members.getLast().cur.y));
+            }
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            try{
+                data.close();
+            }catch (IOException e){
+                //Merda
+            }
+        }
     }
 }
