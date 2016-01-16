@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }else{
             loadLevel("level01.txt");
         }
-
         COLS = Coordinate.maxColumns;
         LINES = Coordinate.maxLines;
 

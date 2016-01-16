@@ -54,8 +54,6 @@ public class Level {
         Coordinate dest = snake.getDest(dir); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
 
-        //System.out.println(board[dest.x][dest.y]);
-
         if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
             moveTo(current.x, current.y, dest); // ...a cobra move-se para o destino sem problemas.
         }
