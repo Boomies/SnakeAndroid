@@ -51,10 +51,14 @@ public class Level {
      * @param dir Direção para onde a cobra se irá mexer.
      */
     public void move(Dir dir) {
+
+        snake.setDirection(dir);
+
         Coordinate dest = snake.getDest(dir); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
 
         if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
+
             moveTo(current.x, current.y, dest); // ...a cobra move-se para o destino sem problemas.
         }
         else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
@@ -96,7 +100,11 @@ public class Level {
         maxApples--; //Decrementa o número máximo de maçãs.
         currentApples--; //Decrementa o número de maçãs existente no nivel.
         for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
-            members.addLast(new Vertebrae(members.getLast().cur.x, members.getLast().cur.y));
+            if(i == 1){
+                members.addLast(new Tail(members.getLast().cur.x, members.getLast().cur.y));
+            }else{
+                members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
+            }
         }
     }
 
@@ -201,7 +209,11 @@ public class Level {
             count++;
         }
         for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
-            members.addLast(new Vertebrae(members.getLast().cur.x, members.getLast().cur.y));
+            if(i == 1){
+                members.addLast(new Tail(members.getLast().cur.x, members.getLast().cur.y));
+            }else{
+                members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
+            }
         }
     }
 
@@ -224,17 +236,30 @@ public class Level {
         Coordinate lastCur = members.getLast().cur; // Guarda a posição actual do último elemento da cobra.
         board[dest.x][dest.y] = board[posX][posY]; // Coloca a cabeça na coordenada destino.
         board[lastCur.x][lastCur.y] = new Space(lastCur.x, lastCur.y); // Na posição antiga da cauda está agora um objecto Space.
-        board[posX][posY] = new Vertebrae(posX, posY); // Cria uma nova vertebra na coordenada antiga da cabeça.
+        board[posX][posY] = new Body(posX, posY); // Cria uma nova vertebra na coordenada antiga da cabeça.
         members.add(1, (Snake) board[posX][posY]); // Coloca o último elemento da lista na coordenada antiga da cabeça.
         members.removeLast(); // Remove o último elemento da cobra.
+
+        int posXCauda = members.getLast().cur.x;
+        int posYCauda = members.getLast().cur.y;
+
+        board[posXCauda][posYCauda] = new Tail(posXCauda, posYCauda);
+        members.removeLast();
+
+        members.addLast((Snake)board[posXCauda][posYCauda]);
+
+
         // Actualiza as posições de cada vértebra a partir da segunda.
         for (int i = 2; i < members.size(); i++) {
-            board[members.get(i).cur.x][members.get(i).cur.y] = members.get(i);
+
+                board[members.get(i).cur.x][members.get(i).cur.y] = members.get(i);
+
         }
         snake.cur = dest; // A posição actual da cobra é agora a coordenada destino.
         elementListener.show(board[lastCur.x][lastCur.y], lastCur.x, lastCur.y); // O view mostra o ultimo elemento da lista.
         elementListener.show(board[dest.x][dest.y], dest.x, dest.y); // O view mostra o elemento na coordenada destino.
         elementListener.show(board[posX][posY], posX, posY); // O view mostra o elemento que está agora na posição antiga da cobra.
+        elementListener.show(board[posXCauda][posYCauda], posXCauda, posYCauda); // O view mostra a cauda
     }
 
     public Element getElement(int l, int c) {
@@ -339,7 +364,12 @@ public class Level {
             }
 
             for (int i = numero_vertebras; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
-                members.addLast(new Vertebrae(members.getLast().cur.x, members.getLast().cur.y));
+                if(i == 1){
+                    System.out.println("ENTREI");
+                    members.addLast(new Tail(members.getLast().cur.x, members.getLast().cur.y));
+                }else{
+                    members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
+                }
             }
 
         }catch (IOException e){

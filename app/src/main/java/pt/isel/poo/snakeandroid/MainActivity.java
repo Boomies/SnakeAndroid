@@ -24,7 +24,7 @@ import pt.isel.poo.tile.TilePanel;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, OnTileTouchListener, OnBeatListener, ElementListener {
     private TextView levelTitle;
     private Level level;
-    private static final int STEP_TIME = 1000;
+    private static final int STEP_TIME = 300;
     Dir dir = Dir.UP;
     Dir aux = dir;
     private TilePanel panel;
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }else{
             loadLevel("level01.txt");
         }
+
         COLS = Coordinate.maxColumns;
         LINES = Coordinate.maxLines;
 
