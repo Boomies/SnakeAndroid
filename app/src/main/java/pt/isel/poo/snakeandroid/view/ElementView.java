@@ -41,6 +41,7 @@ public class ElementView implements Tile{
         if(Snake_imgs == null){
             Snake_imgs = new Bitmap[MAX_IMAGES];
             paint = new Paint();
+            paint.setColor(Color.BLUE);
             Resources res = ctx.getResources();
             for (int i = 0; i < MAX_IMAGES; i++)
                 Snake_imgs[i] = BitmapFactory.decodeResource(res,Imgs_ids[i]);
@@ -95,7 +96,7 @@ public class ElementView implements Tile{
         }
         if (element instanceof Tail) {
             //TAMOS COM UM PROBLEMA AQUI..ELE DIZ QUE NAO PODE INVOCAR .name NUM OBJECTO A NULL
-
+            canvas.drawCircle(side / 2, side / 2, side /2, paint);
             //switch (((Tail) element).getDirection().name()){
               //  case "UP":
                  //   drawBitmap(canvas,Snake_imgs[14]);

@@ -251,14 +251,36 @@ public class Level {
         //Se a direcao atual for diferente da anterior acabamos de virar isso significa que a vertebra a seguir a cabeça sera curva
         if(!atual.name().equals(before.name())){
 
-            //Estavamos a subir / a ir pa direita
-            if(before.dX == -1 || before.dY == -1){
-                ((Snake) board[posX][posY]).setDirection(((atual.dX == 1) || (atual.dY == 1)) ? Dir.DR : Dir.DL) ;
-
+            //UP
+            if(before.name().equals("UP") && atual.name().equals("LEFT")){
+                ((Snake) board[posX][posY]).setDirection(Dir.DL) ;
             }
-            //Estavamos a descer / a ir pa esquerda
-            if(before.dX == 1 || before.dY == 1){
-                ((Snake) board[posX][posY]).setDirection(((atual.dX == -1) || (atual.dY == -1)) ? Dir.UL : Dir.UR);
+            else if(before.name().equals("UP") && atual.name().equals("RIGHT")){
+                ((Snake) board[posX][posY]).setDirection(Dir.DR) ;
+            }
+
+            //DOWN
+            if(before.name().equals("DOWN") && atual.name().equals("LEFT")){
+                ((Snake) board[posX][posY]).setDirection(Dir.UL) ;
+            }
+            else if(before.name().equals("DOWN") && atual.name().equals("RIGHT")){
+                ((Snake) board[posX][posY]).setDirection(Dir.UR) ;
+            }
+
+            //RIGHT
+            if(before.name().equals("RIGHT") && atual.name().equals("UP")){
+                ((Snake) board[posX][posY]).setDirection(Dir.UL) ;
+            }
+            else if(before.name().equals("RIGHT") && atual.name().equals("DOWN")){
+                ((Snake) board[posX][posY]).setDirection(Dir.DL) ;
+            }
+
+            //LEFT
+            if(before.name().equals("LEFT") && atual.name().equals("UP")){
+                ((Snake) board[posX][posY]).setDirection(Dir.UR) ;
+            }
+            else if(before.name().equals("LEFT") && atual.name().equals("DOWN")){
+                ((Snake) board[posX][posY]).setDirection(Dir.DR) ;
             }
 
         }else {
