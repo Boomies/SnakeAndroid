@@ -29,9 +29,11 @@ public enum Dir {
     }
 
     public static Dir correctDir(Dir d){
-        if (d == Dir.DL || d == Dir.UL) return Dir.LEFT;
-        if (d == Dir.DR || d == Dir.UR) return Dir.RIGHT;
-
-        return null;
+        if (d == Dir.DL) return Dir.LEFT;
+        if (d == Dir.DR) return Dir.DOWN;
+        if (d == Dir.UR) return Dir.RIGHT;
+        if (d == Dir.UL) return Dir.UP;
+        
+        return d;
     }
 }

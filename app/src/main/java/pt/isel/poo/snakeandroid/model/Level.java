@@ -106,9 +106,14 @@ public class Level {
     public void snakeGrow() {
         maxApples--; //Decrementa o número máximo de maçãs.
         currentApples--; //Decrementa o número de maçãs existente no nivel.
+        Dir tailDir = members.getLast().getDirection();
+
         for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
             if(i == 1){
-                members.addLast(new Tail(members.getLast().cur.x, members.getLast().cur.y));
+                Tail t = new Tail(members.getLast().cur.x, members.getLast().cur.y);
+                t.setDirection(tailDir);
+
+                members.addLast(t);
             }else{
                 members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
             }

@@ -95,22 +95,20 @@ public class ElementView implements Tile{
             }
         }
         if (element instanceof Tail) {
-            //TAMOS COM UM PROBLEMA AQUI..ELE DIZ QUE NAO PODE INVOCAR .name NUM OBJECTO A NULL
-            canvas.drawCircle(side / 2, side / 2, side /2, paint);
-            //switch (((Tail) element).getDirection().name()){
-              //  case "UP":
-                 //   drawBitmap(canvas,Snake_imgs[14]);
-                //    break;
-                //case "DOWN":
-                   // drawBitmap(canvas,Snake_imgs[11]);
-                  //  break;
-                //case "LEFT":
-                    //drawBitmap(canvas,Snake_imgs[12]);
-                  //  break;
-                //case "RIGHT":
-                    //drawBitmap(canvas,Snake_imgs[13]);
-                  //  break;
-           // }
+            switch (((Tail) element).getDirection().name()){
+                case "UP":
+                    drawBitmap(canvas,Snake_imgs[14]);
+                    break;
+                case "DOWN":
+                    drawBitmap(canvas,Snake_imgs[11]);
+                    break;
+                case "LEFT":
+                    drawBitmap(canvas,Snake_imgs[12]);
+                    break;
+                case "RIGHT":
+                    drawBitmap(canvas,Snake_imgs[13]);
+                    break;
+            }
         }
 
         if (element instanceof Apple) {
