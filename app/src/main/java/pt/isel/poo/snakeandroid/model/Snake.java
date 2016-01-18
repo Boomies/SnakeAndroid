@@ -24,7 +24,7 @@ public class Snake extends Obstacle {
 
     }
 
-    public String getDirection(){
-        return direcao.name();
+    public Dir getDirection(){
+        return direcao;
     }
 }

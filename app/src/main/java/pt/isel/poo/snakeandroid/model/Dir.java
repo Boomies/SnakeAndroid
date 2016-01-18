@@ -7,7 +7,10 @@ public enum Dir {
     /**
      * Cada direção corresponde a determinadas alterações às coordenadas actuais de um objecto.
      */
-    DOWN(1,0), LEFT(0,-1), RIGHT(0,1), UP(-1,0);
+    DOWN(1,0), LEFT(0,-1), RIGHT(0,1), UP(-1,0),
+    //Placeholder, para ser mais facil carregar a imagem correta para o body
+    DL(0,0), DR(0,0), UL(0,0), UR(0,0);
+
 
     public final int dX, dY;
 
@@ -21,6 +24,14 @@ public enum Dir {
         if (d == Dir.UP) return Dir.DOWN;
         if (d == Dir.LEFT) return Dir.RIGHT;
         if (d == Dir.RIGHT) return Dir.LEFT;
+
+        return null;
+    }
+
+    public static Dir correctDir(Dir d){
+        if (d == Dir.DL || d == Dir.UL) return Dir.LEFT;
+        if (d == Dir.DR || d == Dir.UR) return Dir.RIGHT;
+
         return null;
     }
 }

@@ -4,7 +4,7 @@ package pt.isel.poo.snakeandroid.model;
  * Created by Gonçalo Veloso e André Carvalho on 31-10-2015.
  */
 public class Body extends Snake {
-    private Dir direcao;
+    private Dir direcao = Dir.UP;
 
     public Body(int x, int y) {
         super(x, y);
@@ -24,7 +24,7 @@ public class Body extends Snake {
 
     }
 
-    public String getDirection(){
-        return direcao.name();
+    public Dir getDirection(){
+        return direcao;
     }
 }

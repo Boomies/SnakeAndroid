@@ -4,6 +4,7 @@ package pt.isel.poo.snakeandroid.model;
  * Created by Gonçalo Veloso e André Carvalho on 31-10-2015.
  */
 public class Head extends Snake{
+    private Dir direcao = Dir.UP;
     public Head(int x, int y) {
         super(x, y);
     }
@@ -14,7 +15,7 @@ public class Head extends Snake{
      * @return False se o elemento for um obstáculo, a snake morre neste caso. True se o objeto for comestível.
      */
     public boolean eat(Element element) {
-        if (element instanceof Obstacle){ lvl.killSnake(); return false; }
+        if (element instanceof Wall){ lvl.killSnake(); return false; }
         return true;
     }
 
@@ -25,5 +26,14 @@ public class Head extends Snake{
     @Override
     public String toString() {
         return "@";
+    }
+
+    public void setDirection(Dir dir){
+        this.direcao = dir;
+
+    }
+
+    public Dir getDirection(){
+        return direcao;
     }
 }

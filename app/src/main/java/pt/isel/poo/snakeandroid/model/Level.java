@@ -13,6 +13,7 @@ import java.util.Scanner;
  */
 public class Level {
     private String title;   //Título do nível.
+    private Dir atual = Dir.UP , before = Dir.UP; // A dir atual e a da jogada anterior
     private ElementListener elementListener;    //Interface a ser implementada.
     private boolean snakeDead, over;    //Booleans que determinam se a cobra está morta ou se o nível está acabado.
     public Element[][] board;   //Array bidimensional. Corresponde ao nível do jogo.
@@ -52,9 +53,15 @@ public class Level {
      */
     public void move(Dir dir) {
 
-        snake.setDirection(dir);
+        //Se a direcao atual for inversa a anterior a jogada nao conta
+        if(Dir.getOppositeDir(before) == dir){
+            return;
+        }
 
-        Coordinate dest = snake.getDest(dir); // Coordenada correspondente ao destino, de acordo com a direção.
+        before = atual;
+        atual = dir;
+
+        Coordinate dest = snake.getDest(atual); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
 
         if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
@@ -233,21 +240,46 @@ public class Level {
      * @param dest Coordenada destino.
      */
     public void moveTo(int posX, int posY, Coordinate dest) {
+        //Atualizamos a direcao da cabeça
+        ((Snake)board[posX][posY]).setDirection(atual);
+
         Coordinate lastCur = members.getLast().cur; // Guarda a posição actual do último elemento da cobra.
         board[dest.x][dest.y] = board[posX][posY]; // Coloca a cabeça na coordenada destino.
         board[lastCur.x][lastCur.y] = new Space(lastCur.x, lastCur.y); // Na posição antiga da cauda está agora um objecto Space.
         board[posX][posY] = new Body(posX, posY); // Cria uma nova vertebra na coordenada antiga da cabeça.
+
+        //Se a direcao atual for diferente da anterior acabamos de virar isso significa que a vertebra a seguir a cabeça sera curva
+        if(!atual.name().equals(before.name())){
+
+            //Estavamos a subir / a ir pa direita
+            if(before.dX == -1 || before.dY == -1){
+                ((Snake) board[posX][posY]).setDirection(((atual.dX == 1) || (atual.dY == 1)) ? Dir.DR : Dir.DL) ;
+
+            }
+            //Estavamos a descer / a ir pa esquerda
+            if(before.dX == 1 || before.dY == 1){
+                ((Snake) board[posX][posY]).setDirection(((atual.dX == -1) || (atual.dY == -1)) ? Dir.UL : Dir.UR);
+            }
+
+        }else {
+            //A vertebra aseguir a cabeca tera a mesma direcao que ela
+            ((Snake) board[posX][posY]).setDirection(((Snake) board[dest.x][dest.y]).getDirection());
+        }
+
         members.add(1, (Snake) board[posX][posY]); // Coloca o último elemento da lista na coordenada antiga da cabeça.
         members.removeLast(); // Remove o último elemento da cobra.
 
         int posXCauda = members.getLast().cur.x;
         int posYCauda = members.getLast().cur.y;
+        Dir dirCauda = members.getLast().getDirection();
+        dirCauda = Dir.correctDir(dirCauda);
 
         board[posXCauda][posYCauda] = new Tail(posXCauda, posYCauda);
+        ((Snake)board[posXCauda][posYCauda]).setDirection(dirCauda);
+
         members.removeLast();
 
         members.addLast((Snake)board[posXCauda][posYCauda]);
-
 
         // Actualiza as posições de cada vértebra a partir da segunda.
         for (int i = 2; i < members.size(); i++) {
@@ -284,6 +316,8 @@ public class Level {
             //Guardamos o incremento das vertebras
             data.writeInt(this.increment);
 
+            //Guardamos o numero de vertebras atuais( - 1 porque a nossa linked list tambem inclui a cabeca, e neste caso nao e
+            // preciso, porque sera guardada no tabuleiro
             data.writeInt(members.size() - 1);
 
             //Guardamos o numero de linhas e colunas
@@ -343,7 +377,7 @@ public class Level {
             for (int i = 0; i < Coordinate.maxLines; i++) {
                 for (int j = 0; j < Coordinate.maxColumns; j++) {
                     switch (data.readUTF()) {
-                        case "d":
+                        case "X":
                             board[i][j] = new Wall(i, j);
                             break;
                         case "@":
@@ -363,9 +397,8 @@ public class Level {
                 }
             }
 
-            for (int i = numero_vertebras; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
+            for (int i = numero_vertebras; i > 0; i--) { // Cria novas vértebras de acordo com o valor em numero de vertebras
                 if(i == 1){
-                    System.out.println("ENTREI");
                     members.addLast(new Tail(members.getLast().cur.x, members.getLast().cur.y));
                 }else{
                     members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));

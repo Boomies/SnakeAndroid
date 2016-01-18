@@ -148,12 +148,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if(xDif >= yDif) aux = (xFrom > xTo ? Dir.LEFT : Dir.RIGHT);
         else aux = (yFrom > yTo ? Dir.UP : Dir.DOWN);
 
-        if (aux == dir || Dir.getOppositeDir(dir) == aux) return false;
-
-        else {
-            dir = aux;
-            return true;
-        }
+        dir = aux;
+        return true;
     }
 
     @Override
