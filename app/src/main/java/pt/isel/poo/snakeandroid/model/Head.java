@@ -15,7 +15,7 @@ public class Head extends Snake{
      * @return False se o elemento for um obstáculo, a snake morre neste caso. True se o objeto for comestível.
      */
     public boolean eat(Element element) {
-        if (element instanceof Wall){ lvl.killSnake(); return false; }
+        if (element instanceof Obstacle){ lvl.killSnake(); return false; }
         return true;
     }
 

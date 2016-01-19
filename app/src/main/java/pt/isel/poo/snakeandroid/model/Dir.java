@@ -2,6 +2,8 @@ package pt.isel.poo.snakeandroid.model;
 
 import android.widget.Switch;
 
+import java.util.LinkedList;
+
 /**
  * Created by Gonçalo Veloso e André Carvalho on 27-10-2015.
  */
@@ -21,6 +23,9 @@ public enum Dir {
         this.dY = dY;
     }
 
+    /**
+     * Devolve a coordenada oposta a passada em parametro
+     */
     public static Dir getOppositeDir(Dir d){
         if (d == Dir.DOWN) return Dir.UP;
         if (d == Dir.UP) return Dir.DOWN;
@@ -30,13 +35,14 @@ public enum Dir {
         return null;
     }
 
-    public static Dir correctDir(Dir d){
-        if (d == Dir.DL) return Dir.LEFT;
-        if (d == Dir.DR) return Dir.DOWN;
-        if (d == Dir.UR) return Dir.RIGHT;
-        if (d == Dir.UL) return Dir.UP;
+    public static Dir correctDir(Dir cur, Dir pre_last){
+
+        if (cur == Dir.DL) return (pre_last == Dir.LEFT) ? Dir.LEFT : Dir.DOWN;
+        if (cur == Dir.DR) return (pre_last == Dir.RIGHT) ? Dir.RIGHT : Dir.DOWN;
+        if (cur == Dir.UR) return (pre_last == Dir.UP) ? Dir.UP : Dir.RIGHT;
+        if (cur == Dir.UL) return (pre_last == Dir.UP) ? Dir.UP : Dir.LEFT;
         
-        return d;
+        return cur;
     }
 
     public static Dir createDir(String dir){

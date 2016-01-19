@@ -24,13 +24,13 @@ import pt.isel.poo.tile.TilePanel;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, OnTileTouchListener, OnBeatListener, ElementListener {
     private TextView levelTitle;
     private Level level;
-    private static final int STEP_TIME = 300;
+    private static final int STEP_TIME = 250;
     Dir dir = Dir.UP;
     Dir aux = dir;
     private TilePanel panel;
     private int COLS, LINES;
     LinearLayout topView;
-    float xFrom, yFrom, xTo, yTo;
+    private float xFrom, yFrom, xTo, yTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         topView = (LinearLayout) findViewById(R.id.topView);
         panel = (TilePanel) findViewById(R.id.levelPanel);
         levelTitle = (TextView) findViewById(R.id.levelTitle);
-
 
         level = new Level();
 
@@ -140,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void showDeadSnake(int x, int y) {
             Toast.makeText(this,"Game Over", Toast.LENGTH_SHORT).show();
+            finish();
     }
 
     private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {

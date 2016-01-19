@@ -1,7 +1,7 @@
 package pt.isel.poo.snakeandroid.model;
 
 /**
- * Created by Andre on 16/01/16.
+ * Created by André Carvalho on 16/01/16.
  */
 public class Tail extends Snake {
     private Dir direcao = Dir.UP;

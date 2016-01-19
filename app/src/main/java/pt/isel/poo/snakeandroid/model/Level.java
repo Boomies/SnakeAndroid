@@ -61,6 +61,7 @@ public class Level {
             before = atual;
             atual = dir;
         }
+
         Coordinate dest = snake.getDest(atual); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
 
@@ -106,16 +107,16 @@ public class Level {
     public void snakeGrow() {
         maxApples--; //Decrementa o número máximo de maçãs.
         currentApples--; //Decrementa o número de maçãs existente no nivel.
-        Dir tailDir = members.getLast().getDirection();
+        Dir lastDir = members.getLast().getDirection();
 
         for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
             if(i == 1){
                 Tail t = new Tail(members.getLast().cur.x, members.getLast().cur.y);
-                t.setDirection(tailDir);
-
                 members.addLast(t);
             }else{
-                members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
+                Body b = new Body(members.getLast().cur.x, members.getLast().cur.y);
+                b.setDirection(lastDir);
+                members.addLast(b);
             }
         }
     }
@@ -299,7 +300,7 @@ public class Level {
         int posXCauda = members.getLast().cur.x;
         int posYCauda = members.getLast().cur.y;
         Dir dirCauda = members.getLast().getDirection();
-        dirCauda = Dir.correctDir(dirCauda);
+        dirCauda = Dir.correctDir(dirCauda, members.get(members.size() - 2).getDirection());
 
         board[posXCauda][posYCauda] = new Tail(posXCauda, posYCauda);
         ((Snake)board[posXCauda][posYCauda]).setDirection(dirCauda);
