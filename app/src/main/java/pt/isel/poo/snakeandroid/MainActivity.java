@@ -24,13 +24,14 @@ import pt.isel.poo.tile.TilePanel;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, OnTileTouchListener, OnBeatListener, ElementListener {
     private TextView levelTitle;
     private Level level;
-    private static final int STEP_TIME = 250;
+    private static final int STEP_TIME = 300;
     Dir dir = Dir.UP;
-    Dir aux = dir;
     private TilePanel panel;
-    private int COLS, LINES;
     LinearLayout topView;
-    private float xFrom, yFrom, xTo, yTo;
+    private float xFrom;
+    private float yFrom;
+    private int cur_level = 1;
+    private int maxLevel = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +43,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         level = new Level();
 
+        /*
+        try {
+            for (String s : getAssets().list("")){
+                maxLevel++;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        */
+
         if(savedInstanceState != null) {
             //noinspection ConstantConditions
             ByteArrayInputStream array = new ByteArrayInputStream(savedInstanceState.getByteArray("savestate"));
             DataInputStream data = new DataInputStream(array);
 
+            cur_level = savedInstanceState.getInt("level");
             //noinspection ConstantConditions
             switch(savedInstanceState.getString("direction")){
                 case "LEFT":
@@ -65,16 +79,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             level.loadState(data);
         }else{
-            loadLevel("level01.txt");
+            loadLevel("level"+ cur_level+".txt");
         }
 
-        COLS = Coordinate.maxColumns;
-        LINES = Coordinate.maxLines;
+        setUI();
+    }
+
+    private void setUI() {
+        int COLS = Coordinate.maxColumns;
+        int LINES = Coordinate.maxLines;
 
         levelTitle.setText(level.getTitle());
+        panel.setSize(COLS, LINES);
         topView.setOnTouchListener(this);
         panel.setBackgroundColor(Color.BLACK);
-        panel.setSize(COLS, LINES);
         panel.setOnTouchListener(this);
         level.setElementListener(this);
         panel.setHeartbeatListener(STEP_TIME, this);
@@ -84,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 panel.setTile(c, l, new ElementView(this, level.getElement(l, c)));
             }
         }
+
     }
 
     private boolean loadLevel(String fileName) {
@@ -129,6 +148,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if(!level.isOver()){
             level.move(dir);
         }
+        if(level.isOver() && !level.isSnakeDead()){
+            if(maxLevel == cur_level){
+                Toast.makeText(this, "You completed this game", Toast.LENGTH_SHORT).show();
+                finish();//Closes windows
+            }
+
+            level = new Level();
+            ++cur_level;
+            dir = Dir.UP;
+
+            loadLevel("level" + cur_level + ".txt");
+            setUI();
+        }
     }
 
     @Override
@@ -145,10 +177,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {
         double xDif = Math.abs(xTo - xFrom), yDif = Math.abs(yTo - yFrom);
 
-        if(xDif >= yDif) aux = (xFrom > xTo ? Dir.LEFT : Dir.RIGHT);
-        else aux = (yFrom > yTo ? Dir.UP : Dir.DOWN);
+        if(xDif >= yDif) dir = (xFrom > xTo ? Dir.LEFT : Dir.RIGHT);
+        else dir = (yFrom > yTo ? Dir.UP : Dir.DOWN);
 
-        dir = aux;
         return true;
     }
 
@@ -160,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         savedInstanceState.putByteArray("savestate", array.toByteArray());
 
         savedInstanceState.putString("direction", dir.name());
+
+        savedInstanceState.putInt("level", cur_level);
+
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -175,8 +209,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 return true;
 
             case MotionEvent.ACTION_UP:
-                xTo = event.getX();
-                yTo = event.getY();
+                float xTo = event.getX();
+                float yTo = event.getY();
                 return changeDir((int) xFrom, (int) yFrom, (int) xTo, (int) yTo);
         }
         return false;

@@ -75,14 +75,13 @@ public class Level {
             appleGenerator();
             moveTo(current.x, current.y, dest);
         }
-        if (currentApples == 0) { // Se não existirem mais maçãs no nível...
-            if (maxApples > 0) appleGenerator(); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
-                                                   é gerada uma nova maçã. */
-            else {
+        if (maxApples > 0) { // Se não existirem mais maçãs no nível...
+            if (currentApples < 2) appleGenerator(); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
+                                                  é gerada uma nova maçã. */
+        }else {
                 //printBoard();
                 endGame();
-            } // Caso contrório, o jogo acaba.
-        }
+        } // Caso contrório, o jogo acaba.
     }
 
     /**

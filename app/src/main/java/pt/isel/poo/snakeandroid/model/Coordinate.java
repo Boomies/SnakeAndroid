@@ -23,8 +23,8 @@ public class Coordinate {
      * Corrige as coordenadas caso estas estejam fora dos limites (maxLines e maxColumns).
      */
     public void correct(){
-        x = x % maxLines;
-        y = y % maxColumns;
+        x = (x +maxLines)  % maxLines;
+        y = (y+maxColumns) % maxColumns;
     }
 
     /**
