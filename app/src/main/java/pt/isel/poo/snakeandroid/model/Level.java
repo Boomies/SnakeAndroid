@@ -55,12 +55,12 @@ public class Level {
 
         //Se a direcao atual for inversa a anterior a jogada nao conta
         if(Dir.getOppositeDir(before) == dir){
-            return;
+            atual = before;
         }
-
-        before = atual;
-        atual = dir;
-
+        else {
+            before = atual;
+            atual = dir;
+        }
         Coordinate dest = snake.getDest(atual); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
 
@@ -359,9 +359,18 @@ public class Level {
                 }
             }
 
-            //Guardamos a nossa linkedlist -- Maybe it's not necessary
 
+            //Guardamos a nossa linkedlist
 
+            //Tamanho da cobra
+            data.writeInt(members.size());
+
+            for (Snake e : members){
+                data.writeUTF(e.getDirection().name());
+                data.writeInt(e.cur.x);
+                data.writeInt(e.cur.y);
+
+            }
         }catch (IOException e){
             e.printStackTrace();
 
@@ -417,6 +426,12 @@ public class Level {
                         case " ":
                             board[i][j] = new Space(i, j);
                             break;
+                        case "T":
+                            board[i][j] = new Tail(i, j);
+                            break;
+                        case "#":
+                            board[i][j] = new Body(i, j);
+                            break;
                         default:
                             board[i][j] = new Space(i, j);
                             break;
@@ -424,14 +439,24 @@ public class Level {
                 }
             }
 
-            for (int i = numero_vertebras; i > 0; i--) { // Cria novas vértebras de acordo com o valor em numero de vertebras
-                if(i == 1){
-                    members.addLast(new Tail(members.getLast().cur.x, members.getLast().cur.y));
+            int tamanho = data.readInt();
+
+            for (int i = 0; i < tamanho; i++) {
+                String dir = data.readUTF();
+                int dx = data.readInt();
+                int dy = data.readInt();
+
+                //Criacao da cauda
+                if(i == tamanho - 1){
+                    Tail aux = new Tail(dx, dy);
+                    aux.setDirection(Dir.createDir(dir));
+                    members.addLast(aux);
                 }else{
-                    members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
+                    Body aux = new Body(dx, dy);
+                    aux.setDirection(Dir.createDir(dir));
+                    members.addLast(aux);
                 }
             }
-
         }catch (IOException e){
             e.printStackTrace();
         }finally {

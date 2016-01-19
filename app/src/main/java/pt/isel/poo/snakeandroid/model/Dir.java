@@ -1,5 +1,7 @@
 package pt.isel.poo.snakeandroid.model;
 
+import android.widget.Switch;
+
 /**
  * Created by Gonçalo Veloso e André Carvalho on 27-10-2015.
  */
@@ -35,5 +37,28 @@ public enum Dir {
         if (d == Dir.UL) return Dir.UP;
         
         return d;
+    }
+
+    public static Dir createDir(String dir){
+        switch (dir){
+            case "UP":
+                return Dir.UP;
+            case "DOWN":
+                return Dir.DOWN;
+            case "LEFT":
+                return Dir.LEFT;
+            case "RIGHT":
+                return Dir.RIGHT;
+            case "DL":
+                return Dir.DL;
+            case "DR":
+                return Dir.DR;
+            case "UR":
+                return Dir.UR;
+            case "UL":
+                return Dir.UL;
+        }
+
+        return null;
     }
 }
