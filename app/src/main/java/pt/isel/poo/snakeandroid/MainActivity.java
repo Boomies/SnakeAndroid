@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void showDeadSnake(int x, int y) {
             Toast.makeText(this,"Game Over", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
     private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {

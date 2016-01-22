@@ -257,34 +257,34 @@ public class Level {
         if(!atual.name().equals(before.name())){
 
             //UP
-            if(before.name().equals("UP") && atual.name().equals("LEFT")){
+            if((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("LEFT")){
                 ((Snake) board[posX][posY]).setDirection(Dir.DL) ;
             }
-            else if(before.name().equals("UP") && atual.name().equals("RIGHT")){
+            else if((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("RIGHT")){
                 ((Snake) board[posX][posY]).setDirection(Dir.DR) ;
             }
 
             //DOWN
-            if(before.name().equals("DOWN") && atual.name().equals("LEFT")){
+            if((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("LEFT")){
                 ((Snake) board[posX][posY]).setDirection(Dir.UL) ;
             }
-            else if(before.name().equals("DOWN") && atual.name().equals("RIGHT")){
+            else if((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("RIGHT")){
                 ((Snake) board[posX][posY]).setDirection(Dir.UR) ;
             }
 
             //RIGHT
-            if(before.name().equals("RIGHT") && atual.name().equals("UP")){
+            if((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("UP")){
                 ((Snake) board[posX][posY]).setDirection(Dir.UL) ;
             }
-            else if(before.name().equals("RIGHT") && atual.name().equals("DOWN")){
+            else if((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("DOWN")){
                 ((Snake) board[posX][posY]).setDirection(Dir.DL) ;
             }
 
             //LEFT
-            if(before.name().equals("LEFT") && atual.name().equals("UP")){
+            if((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("UP")){
                 ((Snake) board[posX][posY]).setDirection(Dir.UR) ;
             }
-            else if(before.name().equals("LEFT") && atual.name().equals("DOWN")){
+            else if((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("DOWN")){
                 ((Snake) board[posX][posY]).setDirection(Dir.DR) ;
             }
 
@@ -299,7 +299,8 @@ public class Level {
         int posXCauda = members.getLast().cur.x;
         int posYCauda = members.getLast().cur.y;
         Dir dirCauda = members.getLast().getDirection();
-        dirCauda = Dir.correctDir(dirCauda, members.get(members.size() - 2).getDirection());
+
+        dirCauda = Dir.correctDir(dirCauda, members.get(members.size() - 3).getDirection());
 
         board[posXCauda][posYCauda] = new Tail(posXCauda, posYCauda);
         ((Snake)board[posXCauda][posYCauda]).setDirection(dirCauda);
@@ -343,10 +344,6 @@ public class Level {
             //Guardamos o incremento das vertebras
             data.writeInt(this.increment);
 
-            //Guardamos o numero de vertebras atuais( - 1 porque a nossa linked list tambem inclui a cabeca, e neste caso nao e
-            // preciso, porque sera guardada no tabuleiro
-            data.writeInt(members.size() - 1);
-
             //Guardamos o numero de linhas e colunas
             data.writeInt(Coordinate.maxLines);
             data.writeInt(Coordinate.maxColumns);
@@ -355,22 +352,12 @@ public class Level {
             for(int i = 0; i < Coordinate.maxLines; i++){
                 for(int j = 0; j < Coordinate.maxColumns; j++){
                    data.writeUTF(board[i][j].toString());
-
                 }
             }
-
-
-            //Guardamos a nossa linkedlist
-
-            //Tamanho da cobra
-            data.writeInt(members.size());
-
-            for (Snake e : members){
-                data.writeUTF(e.getDirection().name());
-                data.writeInt(e.cur.x);
-                data.writeInt(e.cur.y);
-
+            for (int i = 0; i < members.size(); i++) {
+                data.writeUTF(members.get(i).getDirection().name());
             }
+
         }catch (IOException e){
             e.printStackTrace();
 
@@ -399,8 +386,6 @@ public class Level {
             //Lemos o incremento das vertebras
             increment = data.readInt();
 
-            int numero_vertebras = data.readInt();
-
             //Lemos o numero de linhas e colunas
             Coordinate.maxLines = data.readInt();
             Coordinate.maxColumns = data.readInt();
@@ -427,35 +412,28 @@ public class Level {
                             board[i][j] = new Space(i, j);
                             break;
                         case "T":
-                            board[i][j] = new Tail(i, j);
+                            Tail tail = new Tail(i, j);
+                            board[i][j] = tail;
+                            members.add(tail);
                             break;
                         case "#":
-                            board[i][j] = new Body(i, j);
-                            break;
-                        default:
-                            board[i][j] = new Space(i, j);
+                            Body body = new Body(i, j);
+                            board[i][j] = body;
+                            members.add(body);
                             break;
                     }
                 }
             }
-            int tamanho = data.readInt();
 
-            for (int i = 0; i < tamanho; i++) {
-                String dir = data.readUTF();
-                int dx = data.readInt();
-                int dy = data.readInt();
+            for (int i = 0; i < members.size(); i++) {
+                members.get(i).setDirection(Dir.createDir(data.readUTF()));
 
-                //Criacao da cauda
-                if(i == tamanho - 1){
-                    Tail aux = new Tail(dx, dy);
-                    aux.setDirection(Dir.createDir(dir));
-                    members.addLast(aux);
-                }else{
-                    Body aux = new Body(dx, dy);
-                    aux.setDirection(Dir.createDir(dir));
-                    members.addLast(aux);
+                if(i == 0){
+                   before = atual = members.get(0).getDirection();
                 }
+
             }
+
         }catch (IOException e){
             e.printStackTrace();
         }finally {

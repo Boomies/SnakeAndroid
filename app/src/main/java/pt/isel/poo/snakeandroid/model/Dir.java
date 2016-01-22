@@ -41,6 +41,7 @@ public enum Dir {
         if (cur == Dir.DR) return (pre_last == Dir.RIGHT) ? Dir.RIGHT : Dir.DOWN;
         if (cur == Dir.UR) return (pre_last == Dir.UP) ? Dir.UP : Dir.RIGHT;
         if (cur == Dir.UL) return (pre_last == Dir.UP) ? Dir.UP : Dir.LEFT;
+
         
         return cur;
     }
