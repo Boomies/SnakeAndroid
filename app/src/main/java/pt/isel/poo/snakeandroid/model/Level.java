@@ -142,7 +142,7 @@ public class Level {
      * Mata a cobra.
      */
     public void killSnake() {
-        printBoard();
+        //printBoard();
         snakeDead = true;
         elementListener.showDeadSnake(snake.cur.x, snake.cur.y);
         endGame();
@@ -438,7 +438,6 @@ public class Level {
                     }
                 }
             }
-
             int tamanho = data.readInt();
 
             for (int i = 0; i < tamanho; i++) {
@@ -463,7 +462,7 @@ public class Level {
             try{
                 data.close();
             }catch (IOException e){
-                //Merda
+
             }
         }
     }

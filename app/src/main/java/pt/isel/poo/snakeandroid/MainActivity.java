@@ -24,7 +24,7 @@ import pt.isel.poo.tile.TilePanel;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, OnTileTouchListener, OnBeatListener, ElementListener {
     private TextView levelTitle;
     private Level level;
-    private static final int STEP_TIME = 300;
+    private static final int STEP_TIME = 500;
     Dir dir = Dir.UP;
     private TilePanel panel;
     LinearLayout topView;
@@ -40,9 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         topView = (LinearLayout) findViewById(R.id.topView);
         panel = (TilePanel) findViewById(R.id.levelPanel);
         levelTitle = (TextView) findViewById(R.id.levelTitle);
-
         level = new Level();
-
         /*
         try {
             for (String s : getAssets().list("")){
@@ -76,10 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     dir = Dir.DOWN;
                     break;
             }
-
             level.loadState(data);
-        }else{
-            loadLevel("level"+ cur_level+".txt");
+        } else {
+            loadLevel("level" + cur_level + ".txt");
         }
 
         setUI();
@@ -96,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         panel.setOnTouchListener(this);
         level.setElementListener(this);
         panel.setHeartbeatListener(STEP_TIME, this);
-
         for (int l = 0; l < LINES; l++) {
             for (int c = 0; c < COLS; c++){
                 panel.setTile(c, l, new ElementView(this, level.getElement(l, c)));
@@ -171,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void showDeadSnake(int x, int y) {
             Toast.makeText(this,"Game Over", Toast.LENGTH_SHORT).show();
-            finish();
+        finish();
     }
 
     private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {
@@ -185,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(array);
         level.saveState(data);
@@ -193,8 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         savedInstanceState.putString("direction", dir.name());
 
         savedInstanceState.putInt("level", cur_level);
-
-        super.onSaveInstanceState(savedInstanceState);
+        panel.removeHeartbeatListener();
     }
 
     @Override
