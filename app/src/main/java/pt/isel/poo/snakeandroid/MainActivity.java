@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     break;
             }
             level.loadState(data);
+            level.printMembers();
         } else {
             loadLevel("level" + cur_level + ".txt");
         }
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public void showDeadSnake(int x, int y) {
             Toast.makeText(this,"Game Over", Toast.LENGTH_SHORT).show();
         finish();
+
     }
 
     private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {
