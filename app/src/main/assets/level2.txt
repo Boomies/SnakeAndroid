@@ -1,6 +1,6 @@
 Second Level
 10 x 20
-2 1
+2 10
 XXXXXXXXXXXXXXXXXXXX
 X                  X
 X              A   X
