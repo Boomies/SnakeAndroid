@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private float xFrom;
     private float yFrom;
     private int cur_level = 1;
-    private final int maxLevel = 2;
-    private int timer = 0;
+    private int maxLevel = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         panel = (TilePanel) findViewById(R.id.levelPanel);
         levelTitle = (TextView) findViewById(R.id.levelTitle);
         level = new Level();
-
         /*
         try {
             for (String s : getAssets().list("")){
@@ -76,10 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     dir = Dir.DOWN;
                     break;
             }
-            timer = savedInstanceState.getInt("timer");
-
             level.loadState(data);
-
         } else {
             loadLevel("level" + cur_level + ".txt");
         }
@@ -149,35 +144,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if(!level.isOver()){
             level.move(dir);
         }
-        else{
+        if(level.isOver() && !level.isSnakeDead()){
             if(maxLevel == cur_level){
-                Toast.makeText(this, "You completed the game", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You completed this game", Toast.LENGTH_SHORT).show();
                 finish();//Closes windows
             }
-            else{
-                timer += STEP_TIME;
-                if(timer == 500){
-                    Toast.makeText(this, "Preparing next level..", Toast.LENGTH_SHORT).show();
-                }
 
-                if(timer == 2500){
-                    Toast.makeText(this, "Get ready!", Toast.LENGTH_SHORT).show();
-                }
+            level = new Level();
+            ++cur_level;
+            dir = Dir.UP;
 
-                if(timer == 3000){
-                    timer = 0;
-
-                    level = new Level();
-
-                    ++cur_level;
-                    dir = Dir.UP;
-
-                    loadLevel("level" + cur_level + ".txt");
-                    panel.removeHeartbeatListener();
-                    setUI();
-                }
-
-            }
+            loadLevel("level" + cur_level + ".txt");
+            setUI();
         }
     }
 
@@ -189,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void showDeadSnake(int x, int y) {
             Toast.makeText(this,"Game Over", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private boolean changeDir(int xFrom, int yFrom, int xTo, int yTo) {
@@ -202,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
+        panel.removeHeartbeatListener();
         super.onSaveInstanceState(savedInstanceState);
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(array);
@@ -211,10 +191,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         savedInstanceState.putString("direction", dir.name());
 
         savedInstanceState.putInt("level", cur_level);
-
-        savedInstanceState.putInt("timer", timer);
-
-        panel.removeHeartbeatListener();
     }
 
     @Override
