@@ -9,7 +9,7 @@ public class Apple extends Element {
     }
 
     /**
-     * Override do m�todo toString().
+     * Override do método toString().
      * @return "O".
      */
     @Override

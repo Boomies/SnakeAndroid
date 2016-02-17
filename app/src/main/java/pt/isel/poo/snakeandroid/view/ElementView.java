@@ -13,7 +13,7 @@ import pt.isel.poo.snakeandroid.model.Apple;
 import pt.isel.poo.snakeandroid.model.Body;
 import pt.isel.poo.snakeandroid.model.Element;
 import pt.isel.poo.snakeandroid.model.Head;
-import pt.isel.poo.snakeandroid.model.Snake;
+import pt.isel.poo.snakeandroid.model.Poison;
 import pt.isel.poo.snakeandroid.model.Tail;
 import pt.isel.poo.snakeandroid.model.Wall;
 import pt.isel.poo.tile.Tile;
@@ -29,7 +29,7 @@ public class ElementView implements Tile{
             R.drawable.apple, R.drawable.body_dl, R.drawable.body_dr, R.drawable.body_lr,
             R.drawable.body_ud, R.drawable.body_ul, R.drawable.body_ur, R.drawable.head_d,
             R.drawable.head_l, R.drawable.head_r, R.drawable.head_u, R.drawable.tail_d,
-            R.drawable.tail_l, R.drawable.tail_r, R.drawable.tail_u, R.drawable.wall
+            R.drawable.tail_l, R.drawable.tail_r, R.drawable.tail_u, R.drawable.wall, R.drawable.poison
 
     };
     public static final int MAX_IMAGES = Imgs_ids.length;
@@ -118,6 +118,10 @@ public class ElementView implements Tile{
         if (element instanceof Wall) {
             drawBitmap(canvas,Snake_imgs[15]);
         }
+        if (element instanceof Poison){
+            drawBitmap(canvas,Snake_imgs[16]);
+        }
+
     }
 
     private void drawBitmap(Canvas canvas, Bitmap img) {

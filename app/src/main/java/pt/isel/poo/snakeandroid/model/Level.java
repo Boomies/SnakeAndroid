@@ -72,11 +72,11 @@ public class Level {
         else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
         {
             snakeGrow();    // ...então come e cresce.
-            appleGenerator();
+            ElementGenerator(true);
             moveTo(current.x, current.y, dest);
         }
         if (maxApples > 0) { // Se não existirem mais maçãs no nível...
-            if (currentApples < 2) appleGenerator(); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
+            if (currentApples < 2) ElementGenerator(true); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
                                                   é gerada uma nova maçã. */
         }else {
             //printBoard();
@@ -87,17 +87,21 @@ public class Level {
     /**
      * Gera uma nova maçã num sítio aleatório do nível.
      */
-    private void appleGenerator() {
+    private void ElementGenerator(boolean isApple) {
         Random rnd = new Random(); // Novo objecto random.
         int rndX = rnd.nextInt(Coordinate.maxLines); // Linha aleatória.
         int rndY = rnd.nextInt(Coordinate.maxColumns); // Coluna aleatória.
+
         while (!(board[rndX][rndY] instanceof Space)) { // Enquanto os valores gerados não corresponderem a um espaço...
             rndX = rnd.nextInt(Coordinate.maxLines); // ...são gerados valores novos.
             rndY = rnd.nextInt(Coordinate.maxColumns);
         }
-        board[rndX][rndY] = new Apple(rndX, rndY); // A nova maçã é colocada no local definido por rndX e rndY.
+
+        board[rndX][rndY] = isApple ? new Apple(rndX, rndY) : new Poison(rndX, rndY); // A nova maçã é colocada no local definido por rndX e rndY.
+
+        if(isApple) currentApples++; // O número de maçãs existente no nível é incrementado.
+
         elementListener.show(board[rndX][rndY], rndX, rndY); // é necessário que o view mostre essa nova maçã.
-        currentApples++; // O número de maçãs existente no nível é incrementado.
     }
 
     /**
@@ -227,6 +231,9 @@ public class Level {
                 members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
             }
         }
+
+        //Adicionamos veneno numa posicao vazia
+        ElementGenerator(false);
     }
 
     public void printBoard(){
