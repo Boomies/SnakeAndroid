@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.codetail.widget.RevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="pt.isel.poo.snakeandroid.Intro">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/ic_launcher" />
+
+        <Button
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="50dp"
+            android:text="Play!" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="12dp"
+            android:text="Created by André Carvalho &amp; Gonçalo Veloso" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/toAnimate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A5D6A7"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+
+</io.codetail.widget.RevealFrameLayout>
