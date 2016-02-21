@@ -20,7 +20,7 @@ public class Level {
     private Head snake; //Inicialização de um objecto de cabeça da cobra.
     private int increment;    //Número de vértebras iniciais e a serem adicionadas quando a cobra come uma maçã.
     private int maxApples, currentApples; //Número de maçãs máximas num nível e número de maçãs existentes no nível.
-    LinkedList<Snake> members = new LinkedList<Snake>(); //Lista que irá conter a cobra.
+    LinkedList<Snake> members = new LinkedList<>(); //Lista que irá conter a cobra.
     private Mouse mouse;
 
 
@@ -59,11 +59,8 @@ public class Level {
             moveMouse();
         }
 
-
         //Se a direcao atual for inversa a anterior a jogada nao conta
-        if (Dir.getOppositeDir(before) == dir) {
-            atual = before;
-        } else {
+        if (!(Dir.getOppositeDir(before).name()).equals(dir.name())) {
             before = atual;
             atual = dir;
         }
@@ -72,14 +69,12 @@ public class Level {
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
 
         if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
-
             moveTo(current.x, current.y, dest); // ...a cobra move-se para o destino sem problemas.
+
         } else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
         {
-            ElementGenerator((board[dest.x][dest.y] instanceof Mouse) ? 2 : 1);
-
+            ElementGenerator((board[dest.x][dest.y] instanceof Apple) ? 1 : 2);
             snakeGrow((board[dest.x][dest.y] instanceof Apple));    // ...então come e cresce.
-
             moveTo(current.x, current.y, dest);
         }
 
@@ -360,49 +355,14 @@ public class Level {
         board[posX][posY] = new Body(posX, posY); // Cria uma nova vertebra na coordenada antiga da cabeça.
 
         //Se a direcao atual for diferente da anterior acabamos de virar isso significa que a vertebra a seguir a cabeça sera curva
-        if (!atual.name().equals(before.name())) {
-
-            //UP
-            if ((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("LEFT")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.DL);
-            } else if ((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("RIGHT")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.DR);
-            }
-
-            //DOWN
-            if ((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("LEFT")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.UL);
-            } else if ((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("RIGHT")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.UR);
-            }
-
-            //RIGHT
-            if ((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("UP")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.UL);
-            } else if ((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("DOWN")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.DL);
-            }
-
-            //LEFT
-            if ((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("UP")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.UR);
-            } else if ((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("DOWN")) {
-                ((Snake) board[posX][posY]).setDirection(Dir.DR);
-            }
-
-        } else {
-            //A vertebra aseguir a cabeca tera a mesma direcao que ela
-            ((Snake) board[posX][posY]).setDirection(((Snake) board[dest.x][dest.y]).getDirection());
-        }
+        ((Snake) board[posX][posY]).setDirection(Dir.correctBodyDir(atual, before));
 
         members.add(1, (Snake) board[posX][posY]); // Coloca o último elemento da lista na coordenada antiga da cabeça.
         members.removeLast(); // Remove o último elemento da cobra.
 
         int posXCauda = members.getLast().cur.x;
         int posYCauda = members.getLast().cur.y;
-        Dir dirCauda = members.getLast().getDirection();
-
-        dirCauda = Dir.correctDir(dirCauda, members.get(members.size() - 3).getDirection());
+        Dir dirCauda = Dir.correctTailDir(members);
 
         board[posXCauda][posYCauda] = new Tail(posXCauda, posYCauda);
         ((Snake) board[posXCauda][posYCauda]).setDirection(dirCauda);
