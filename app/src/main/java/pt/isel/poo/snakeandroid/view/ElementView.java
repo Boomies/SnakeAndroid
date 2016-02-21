@@ -13,6 +13,7 @@ import pt.isel.poo.snakeandroid.model.Apple;
 import pt.isel.poo.snakeandroid.model.Body;
 import pt.isel.poo.snakeandroid.model.Element;
 import pt.isel.poo.snakeandroid.model.Head;
+import pt.isel.poo.snakeandroid.model.Mouse;
 import pt.isel.poo.snakeandroid.model.Poison;
 import pt.isel.poo.snakeandroid.model.Tail;
 import pt.isel.poo.snakeandroid.model.Wall;
@@ -29,9 +30,10 @@ public class ElementView implements Tile{
             R.drawable.apple, R.drawable.body_dl, R.drawable.body_dr, R.drawable.body_lr,
             R.drawable.body_ud, R.drawable.body_ul, R.drawable.body_ur, R.drawable.head_d,
             R.drawable.head_l, R.drawable.head_r, R.drawable.head_u, R.drawable.tail_d,
-            R.drawable.tail_l, R.drawable.tail_r, R.drawable.tail_u, R.drawable.wall, R.drawable.poison
-
+            R.drawable.tail_l, R.drawable.tail_r, R.drawable.tail_u, R.drawable.wall, R.drawable.poison,
+            R.drawable.mouse_u, R.drawable.mouse_d, R.drawable.mouse_l, R.drawable.mouse_r
     };
+
     public static final int MAX_IMAGES = Imgs_ids.length;
     private static Bitmap[] Snake_imgs;
 
@@ -121,6 +123,25 @@ public class ElementView implements Tile{
         if (element instanceof Poison){
             drawBitmap(canvas,Snake_imgs[16]);
         }
+
+        if (element instanceof Mouse) {
+            switch (((Mouse) element).getDirection().name()){
+                case "UP":
+                    drawBitmap(canvas,Snake_imgs[17]);
+                    break;
+                case "DOWN":
+                    drawBitmap(canvas,Snake_imgs[18]);
+                    break;
+                case "LEFT":
+                    drawBitmap(canvas,Snake_imgs[19]);
+                    break;
+                case "RIGHT":
+                    drawBitmap(canvas,Snake_imgs[20]);
+                    break;
+            }
+
+        }
+
 
     }
 

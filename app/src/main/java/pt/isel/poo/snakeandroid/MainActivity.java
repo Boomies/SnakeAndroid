@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private void setUI() {
         int COLS = Coordinate.maxColumns;
         int LINES = Coordinate.maxLines;
-
         levelTitle.setText(level.getTitle());
         panel.setSize(COLS, LINES);
         topView.setOnTouchListener(this);
@@ -189,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         MainActivity.this.finish();
                                     }
                                 })
+                                .setCancelable(false)
                                 .create().show();
                     }
                 } else {

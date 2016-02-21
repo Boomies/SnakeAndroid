@@ -13,7 +13,7 @@ import java.util.Scanner;
  */
 public class Level {
     private String title;   //Título do nível.
-    private Dir atual = Dir.UP , before = Dir.UP; // A dir atual e a da jogada anterior
+    private Dir atual = Dir.UP, before = Dir.UP; // A dir atual e a da jogada anterior
     private ElementListener elementListener;    //Interface a ser implementada.
     private boolean snakeDead, over;    //Booleans que determinam se a cobra está morta ou se o nível está acabado.
     public Element[][] board;   //Array bidimensional. Corresponde ao nível do jogo.
@@ -21,6 +21,8 @@ public class Level {
     private int increment;    //Número de vértebras iniciais e a serem adicionadas quando a cobra come uma maçã.
     private int maxApples, currentApples; //Número de maçãs máximas num nível e número de maçãs existentes no nível.
     LinkedList<Snake> members = new LinkedList<Snake>(); //Lista que irá conter a cobra.
+    private Mouse mouse;
+
 
     public Level() {
         Element.lvl = this;
@@ -52,12 +54,16 @@ public class Level {
      * @param dir Direção para onde a cobra se irá mexer.
      */
     public void move(Dir dir) {
+        //Mexemos o rato
+        if (mouse != null) {
+            moveMouse();
+        }
+
 
         //Se a direcao atual for inversa a anterior a jogada nao conta
-        if(Dir.getOppositeDir(before) == dir){
+        if (Dir.getOppositeDir(before) == dir) {
             atual = before;
-        }
-        else {
+        } else {
             before = atual;
             atual = dir;
         }
@@ -68,55 +74,119 @@ public class Level {
         if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
 
             moveTo(current.x, current.y, dest); // ...a cobra move-se para o destino sem problemas.
-        }
-        else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
+        } else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
         {
-            snakeGrow();    // ...então come e cresce.
-            ElementGenerator(true);
+            ElementGenerator((board[dest.x][dest.y] instanceof Mouse) ? 2 : 1);
+
+            snakeGrow((board[dest.x][dest.y] instanceof Apple));    // ...então come e cresce.
+
             moveTo(current.x, current.y, dest);
         }
+
         if (maxApples > 0) { // Se não existirem mais maçãs no nível...
-            if (currentApples < 2) ElementGenerator(true); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
+            if (currentApples < 2) ElementGenerator(1); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
                                                   é gerada uma nova maçã. */
-        }else {
-            //printBoard();
+        } else {
+
             endGame();
         } // Caso contrório, o jogo acaba.
+    }
+
+    private void moveMouse() {
+        int X = mouse.cur.x;
+        int Y = mouse.cur.y;
+
+        Random rnd = new Random();
+
+        //Escolhemos se vamos mexer em X(0) ou Y(1)
+        int what = rnd.nextInt(2);
+
+        //Escolhemos o incremento 0 (-1), 1(1)
+        int inc = rnd.nextInt(2);
+
+        if (inc == 0) {
+            inc = -1;
+        }
+
+        //Verificamos se nao saimos do tabuleiro.Se sairmos ficamos na mesma posicao
+        if (!(what == 0 ? X + inc < 1 || X + inc > Coordinate.maxLines : Y + inc < 1 || Y + inc > Coordinate.maxColumns)) {
+            int auxX = X;
+            int auxY = Y;
+            Dir aux;
+
+            if (what == 0) {
+                auxX = X + inc;
+                aux = inc < 0 ? Dir.UP : Dir.DOWN;
+
+            } else {
+                auxY = Y + inc;
+                aux = inc < 0 ? Dir.LEFT : Dir.RIGHT;
+
+            }
+
+            //Se na posicao calculada nao corresponder a um espaco, ficamos na mesma posicao.
+            if (board[auxX][auxY] instanceof Space) {
+                board[X][Y] = new Space(X, Y);
+
+                mouse.setCur(auxX, auxY);
+                mouse.setDirection(aux);
+
+                board[auxX][auxY] = mouse;
+
+                elementListener.show(board[X][Y], X, Y);
+                elementListener.show(board[auxX][auxY], auxX, auxY);
+
+            }
+        }
     }
 
     /**
      * Gera uma nova maçã num sítio aleatório do nível.
      */
-    private void ElementGenerator(boolean isApple) {
-        Random rnd = new Random(); // Novo objecto random.
-        int rndX = rnd.nextInt(Coordinate.maxLines); // Linha aleatória.
-        int rndY = rnd.nextInt(Coordinate.maxColumns); // Coluna aleatória.
+    private void ElementGenerator(int whatIs) {
+        int array[] = generatePosition();
 
-        while (!(board[rndX][rndY] instanceof Space)) { // Enquanto os valores gerados não corresponderem a um espaço...
-            rndX = rnd.nextInt(Coordinate.maxLines); // ...são gerados valores novos.
-            rndY = rnd.nextInt(Coordinate.maxColumns);
+        switch (whatIs) {
+            //Apple
+            case 1:
+                board[array[0]][array[1]] = new Apple(array[0], array[1]);
+                currentApples++; // O número de maçãs existente no nível é incrementado.
+                break;
+            //Mouse
+            case 2:
+                mouse = null;
+                mouse = new Mouse(array[0], array[1]);
+                mouse.setCur(array[0], array[1]);
+                board[array[0]][array[1]] = mouse;
+                break;
+            //Poison
+            case 3:
+                board[array[0]][array[1]] = new Poison(array[0], array[1]);
+                break;
         }
 
-        board[rndX][rndY] = isApple ? new Apple(rndX, rndY) : new Poison(rndX, rndY); // A nova maçã é colocada no local definido por rndX e rndY.
-
-        if(isApple) currentApples++; // O número de maçãs existente no nível é incrementado.
-
-        elementListener.show(board[rndX][rndY], rndX, rndY); // é necessário que o view mostre essa nova maçã.
+        if (elementListener != null) {
+            elementListener.show(board[array[0]][array[1]], array[1], array[0]); // é necessário que o view mostre essa nova maçã.
+        }
     }
 
     /**
      * Cresce a cobra.
      */
-    public void snakeGrow() {
-        maxApples--; //Decrementa o número máximo de maçãs.
-        currentApples--; //Decrementa o número de maçãs existente no nivel.
+    public void snakeGrow(boolean isApple) {
+
+        if (isApple) {
+            maxApples--; //Decrementa o número máximo de maçãs.
+            currentApples--; //Decrementa o número de maçãs existente no nivel.
+        }
+
         Dir lastDir = members.getLast().getDirection();
 
         for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
-            if(i == 1){
+            if (i == 1) {
                 Tail t = new Tail(members.getLast().cur.x, members.getLast().cur.y);
                 members.addLast(t);
-            }else{
+            } else {
                 Body b = new Body(members.getLast().cur.x, members.getLast().cur.y);
                 b.setDirection(lastDir);
                 members.addLast(b);
@@ -182,7 +252,7 @@ public class Level {
         Scanner io = new Scanner(file);
         int count = 1;
 
-        while(io.hasNextLine()) {
+        while (io.hasNextLine()) {
             if (count == 1) {
                 title = io.nextLine();
             } else if (count == 2) {
@@ -224,19 +294,42 @@ public class Level {
             }
             count++;
         }
+
         for (int i = increment; i > 0; i--) { // Cria novas vértebras de acordo com o valor em increment.
-            if(i == 1){
+            if (i == 1) {
                 members.addLast(new Tail(members.getLast().cur.x, members.getLast().cur.y));
-            }else{
+            } else {
                 members.addLast(new Body(members.getLast().cur.x, members.getLast().cur.y));
             }
         }
 
+        //Adicionamos um rato
+        ElementGenerator(2);
+
         //Adicionamos veneno numa posicao vazia
-        ElementGenerator(false);
+        ElementGenerator(3);
+
     }
 
-    public void printBoard(){
+    private int[] generatePosition() {
+        int array[] = new int[2];
+        Random rnd = new Random(); // Novo objecto random.
+        int rndX = rnd.nextInt(Coordinate.maxLines); // Linha aleatória.
+        int rndY = rnd.nextInt(Coordinate.maxColumns); // Coluna aleatória.
+
+        while (!(board[rndX][rndY] instanceof Space)) { // Enquanto os valores gerados não corresponderem a um espaço...
+            rndX = rnd.nextInt(Coordinate.maxLines); // ...são gerados valores novos.
+            rndY = rnd.nextInt(Coordinate.maxColumns);
+        }
+
+        array[0] = rndX;
+        array[1] = rndY;
+
+        return array;
+    }
+
+
+    public void printBoard() {
         for (int i = 0; i < Coordinate.maxLines; i++) {
             for (int j = 0; j < Coordinate.maxColumns; j++) {
                 System.out.print(board[i][j]);
@@ -244,6 +337,7 @@ public class Level {
             System.out.println();
         }
     }
+
     /**
      * Move a cobra para o destino.
      *
@@ -253,7 +347,12 @@ public class Level {
      */
     public void moveTo(int posX, int posY, Coordinate dest) {
         //Atualizamos a direcao da cabeça
-        ((Snake)board[posX][posY]).setDirection(atual);
+        try {
+            ((Snake) board[posX][posY]).setDirection(atual);
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
 
         Coordinate lastCur = members.getLast().cur; // Guarda a posição actual do último elemento da cobra.
         board[dest.x][dest.y] = board[posX][posY]; // Coloca a cabeça na coordenada destino.
@@ -261,41 +360,37 @@ public class Level {
         board[posX][posY] = new Body(posX, posY); // Cria uma nova vertebra na coordenada antiga da cabeça.
 
         //Se a direcao atual for diferente da anterior acabamos de virar isso significa que a vertebra a seguir a cabeça sera curva
-        if(!atual.name().equals(before.name())){
+        if (!atual.name().equals(before.name())) {
 
             //UP
-            if((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("LEFT")){
-                ((Snake) board[posX][posY]).setDirection(Dir.DL) ;
-            }
-            else if((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("RIGHT")){
-                ((Snake) board[posX][posY]).setDirection(Dir.DR) ;
+            if ((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("LEFT")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.DL);
+            } else if ((before.name().equals("UP") || before.name().equals("UL")) && atual.name().equals("RIGHT")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.DR);
             }
 
             //DOWN
-            if((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("LEFT")){
-                ((Snake) board[posX][posY]).setDirection(Dir.UL) ;
-            }
-            else if((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("RIGHT")){
-                ((Snake) board[posX][posY]).setDirection(Dir.UR) ;
+            if ((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("LEFT")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.UL);
+            } else if ((before.name().equals("DOWN") || before.name().equals("UR")) && atual.name().equals("RIGHT")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.UR);
             }
 
             //RIGHT
-            if((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("UP")){
-                ((Snake) board[posX][posY]).setDirection(Dir.UL) ;
-            }
-            else if((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("DOWN")){
-                ((Snake) board[posX][posY]).setDirection(Dir.DL) ;
+            if ((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("UP")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.UL);
+            } else if ((before.name().equals("RIGHT") || before.name().equals("DR")) && atual.name().equals("DOWN")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.DL);
             }
 
             //LEFT
-            if((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("UP")){
-                ((Snake) board[posX][posY]).setDirection(Dir.UR) ;
-            }
-            else if((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("DOWN")){
-                ((Snake) board[posX][posY]).setDirection(Dir.DR) ;
+            if ((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("UP")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.UR);
+            } else if ((before.name().equals("LEFT") || before.name().equals("DL")) && atual.name().equals("DOWN")) {
+                ((Snake) board[posX][posY]).setDirection(Dir.DR);
             }
 
-        }else {
+        } else {
             //A vertebra aseguir a cabeca tera a mesma direcao que ela
             ((Snake) board[posX][posY]).setDirection(((Snake) board[dest.x][dest.y]).getDirection());
         }
@@ -310,11 +405,11 @@ public class Level {
         dirCauda = Dir.correctDir(dirCauda, members.get(members.size() - 3).getDirection());
 
         board[posXCauda][posYCauda] = new Tail(posXCauda, posYCauda);
-        ((Snake)board[posXCauda][posYCauda]).setDirection(dirCauda);
+        ((Snake) board[posXCauda][posYCauda]).setDirection(dirCauda);
 
         members.removeLast();
 
-        members.addLast((Snake)board[posXCauda][posYCauda]);
+        members.addLast((Snake) board[posXCauda][posYCauda]);
 
         // Actualiza as posições de cada vértebra a partir da segunda.
         for (int i = 2; i < members.size(); i++) {
@@ -333,10 +428,10 @@ public class Level {
         return board[l][c];
     }
 
-    public void saveState(DataOutputStream data){
+    public void saveState(DataOutputStream data) {
 
 
-        try{
+        try {
             //Guardamos o titulo
             data.writeUTF(this.getTitle());
 
@@ -356,8 +451,8 @@ public class Level {
             data.writeInt(Coordinate.maxColumns);
 
             //Guardamos o tabuleiro
-            for(int i = 0; i < Coordinate.maxLines; i++){
-                for(int j = 0; j < Coordinate.maxColumns; j++){
+            for (int i = 0; i < Coordinate.maxLines; i++) {
+                for (int j = 0; j < Coordinate.maxColumns; j++) {
                     data.writeUTF(board[i][j].toString());
                 }
             }
@@ -370,13 +465,15 @@ public class Level {
                 data.writeInt(e.cur.y);
             }
 
-        }catch (IOException e){
+            data.writeUTF(mouse.getDirection().name());
+
+        } catch (IOException e) {
             e.printStackTrace();
 
-        }finally {
+        } finally {
             try {
                 data.close();
-            }catch (IOException e) {
+            } catch (IOException e) {
                 //Merda
             }
         }
@@ -428,6 +525,13 @@ public class Level {
                         case "#":
                             board[i][j] = new Body(i, j);
                             break;
+                        case "P":
+                            board[i][j] = new Poison(i, j);
+                            break;
+                        case "M":
+                            mouse = new Mouse(i, j);
+                            board[i][j] = mouse;
+                            break;
                     }
                 }
             }
@@ -435,6 +539,8 @@ public class Level {
             int size = data.readInt();
             for (int i = 0; i < size; i++) {
                 Dir dir = Dir.createDir(data.readUTF());
+
+
                 int ax = data.readInt();
                 int ay = data.readInt();
 
@@ -446,15 +552,24 @@ public class Level {
                 }
             }
 
-        }catch (IOException e){
+            Dir dir = Dir.createDir(data.readUTF());
+            mouse.setDirection(dir);
+        } catch (
+                IOException e
+                )
+
+        {
             e.printStackTrace();
-        }finally {
-            try{
+        } finally
+
+        {
+            try {
                 data.close();
-            }catch (IOException e){
+            } catch (IOException e) {
 
             }
         }
+
     }
 
     public void printMembers() {
