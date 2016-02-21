@@ -161,7 +161,7 @@ public class Level {
         }
 
         if (elementListener != null) {
-            elementListener.show(board[array[0]][array[1]], array[1], array[0]); // é necessário que o view mostre essa nova maçã.
+            elementListener.show(board[array[0]][array[1]], array[0], array[1]); // é necessário que o view mostre essa nova maçã.
         }
     }
 

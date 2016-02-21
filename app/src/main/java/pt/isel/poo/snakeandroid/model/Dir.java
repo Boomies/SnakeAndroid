@@ -37,6 +37,7 @@ public enum Dir {
     public static Dir correctBodyDir(Dir atual, Dir before) {
         Dir cur = null;
 
+
         if (atual.name().equals(before.name())) {
             cur = atual;
 
@@ -59,7 +60,10 @@ public enum Dir {
 
                 }
             } else if (atual.name().equals("LEFT")) {
+
                 if (before.name().equals("DOWN")) {
+                    System.out.println("DIR " +atual.name());
+                    System.out.println("DIR " +before.name());
                     cur = Dir.UL;
 
                 } else if (before.name().equals("UP")) {
