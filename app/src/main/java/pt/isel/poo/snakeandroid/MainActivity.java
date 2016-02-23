@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     LinearLayout topView;
     private float xFrom, yFrom;
     private int[] scores = new int[3];
-    private int cur_level = 1, maxLevel = 2;
+    private int cur_level = 1, maxLevel = 0;
     private String FILE_NAME = "scores.txt";
 
     @Override
@@ -75,17 +75,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }
 
-        /*
+        //Verificamos quantos niveis e que temos
         try {
             for (String s : getAssets().list("")){
-                maxLevel++;
+                if(s.contains("level")) maxLevel++;
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        */
 
         if (savedInstanceState != null) {
             //noinspection ConstantConditions
