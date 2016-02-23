@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private float xFrom, yFrom;
     private int[] scores = new int[3];
     private int cur_level = 1, maxLevel = 2;
+    private String FILE_NAME = "scores.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,27 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         levelTitle = (TextView) findViewById(R.id.levelTitle);
         currentScore = (TextView) findViewById(R.id.currentScore);
         level = new Level();
+
+        //Se nao conseguimos ler o ficheiro tentamos criar um novo
+        if(!loadScores()){
+            BufferedWriter file = null;
+            try {
+                OutputStream out = openFileOutput(FILE_NAME, MODE_PRIVATE);
+                file = new BufferedWriter(new OutputStreamWriter(out));
+                file.write("");
+                file.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (file != null) file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         /*
         try {
             for (String s : getAssets().list("")){
@@ -295,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     public void updateScores(){
         System.out.println("SCORE = " + level.scoreCheck());
+
         if(loadScores()){
             int thisScore = level.scoreCheck();
             if (thisScore > scores[0]){
@@ -311,20 +335,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             saveScores();
         }
-        else Toast.makeText(this, "Error updating Scoreboard", Toast.LENGTH_SHORT);
+        else Toast.makeText(this, "Error updating Scoreboard", Toast.LENGTH_SHORT).show();
     }
 
     public boolean loadScores(){
         Scanner io = null;
+        int i = 0;
         try {
-            io = new Scanner(openFileInput("scores.txt"));
-            for (int i = 0; i < scores.length; i++) {
+            io = new Scanner(openFileInput(FILE_NAME));
+            while(io.hasNext()){
                 scores[i] = io.nextInt();
+                i++;
             }
             return true;
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
+
         } finally {
             if (io != null) io.close();
         }
@@ -333,14 +361,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public void saveScores(){
         BufferedWriter file = null;
         try {
-            OutputStream out = openFileOutput("scores.txt", MODE_PRIVATE);
+            OutputStream out = openFileOutput(FILE_NAME, MODE_PRIVATE);
             file = new BufferedWriter(new OutputStreamWriter(out));
+
             for (int i = 0; i < scores.length; i++) {
                 file.write(scores[i] + " ");
             }
+
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("FAILURE");
         } finally {
             try {
                 if (file != null) file.close();
