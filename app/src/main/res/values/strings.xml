@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Snake Android</string>
+    <string name="no_score">No Score</string>
 </resources>
