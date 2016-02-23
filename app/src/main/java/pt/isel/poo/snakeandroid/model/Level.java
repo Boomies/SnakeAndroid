@@ -103,7 +103,7 @@ public class Level {
         }
 
         //Verificamos se nao saimos do tabuleiro.Se sairmos ficamos na mesma posicao
-        if (!(what == 0 ? X + inc < 1 || X + inc > Coordinate.maxLines : Y + inc < 1 || Y + inc > Coordinate.maxColumns)) {
+        if (!(what == 0 ? X + inc < 1 || X + inc > Coordinate.maxLines : Y + inc < 1 || Y + inc > Coordinate.maxColumns -1)) {
             int auxX = X;
             int auxY = Y;
             Dir aux;
