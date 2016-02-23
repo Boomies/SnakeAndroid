@@ -6,12 +6,15 @@ package pt.isel.poo.snakeandroid.model;
 public class Apple extends Element {
     public Apple(int x, int y) {
         super(x, y);
-    }
+        points = 10;
 
+    }
     /**
      * Override do método toString().
      * @return "O".
      */
+
+
     @Override
     public String toString() {
         return "O";

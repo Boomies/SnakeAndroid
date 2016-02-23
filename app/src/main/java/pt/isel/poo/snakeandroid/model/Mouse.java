@@ -5,7 +5,6 @@ package pt.isel.poo.snakeandroid.model;
  */
 public class Mouse extends Element {
     private Dir direcao = Dir.UP;
-
     /**
      * Construtor Element. Cria um elemento na linha x e coluna y.
      *
@@ -14,8 +13,8 @@ public class Mouse extends Element {
      */
     public Mouse(int x, int y) {
         super(x, y);
+        points = 30;
     }
-
     /**
      * Override do método toString().
      * @return "O".

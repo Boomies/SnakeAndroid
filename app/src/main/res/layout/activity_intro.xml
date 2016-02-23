@@ -22,9 +22,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="50dp"
-            android:text="Play!" />
+            android:layout_marginBottom="100dp"
+            android:text="Play"
+            android:textSize="20dp" />
 
+        <Button
+            android:id="@+id/scoreboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="50dp"
+            android:text="Scoreboard"
+            android:textSize="20dp" />
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"

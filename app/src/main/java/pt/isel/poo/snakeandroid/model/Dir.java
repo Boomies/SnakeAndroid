@@ -36,45 +36,44 @@ public enum Dir {
 
     public static Dir correctBodyDir(Dir atual, Dir before) {
         Dir cur = null;
+        String a = atual.name();
+        String b = before.name();
 
-
-        if (atual.name().equals(before.name())) {
+        if (a.equals(b)) {
             cur = atual;
 
         } else {
 
-            if (atual.name().equals("UP")) {
-                if (before.name().equals("LEFT")) {
+            if (a.equals("UP")) {
+                if (b.equals("LEFT")) {
                     cur = Dir.UR;
 
-                } else if (before.name().equals("RIGHT")) {
+                } else if (b.equals("RIGHT")) {
                     cur = Dir.UL;
 
                 }
-            } else if (atual.name().equals("DOWN")) {
-                if (before.name().equals("RIGHT")) {
+            } else if (a.equals("DOWN")) {
+                if (b.equals("RIGHT")) {
                     cur = Dir.DL;
 
-                } else if (before.name().equals("LEFT")) {
+                } else if (b.equals("LEFT")) {
                     cur = Dir.DR;
 
                 }
-            } else if (atual.name().equals("LEFT")) {
+            } else if (a.equals("LEFT")) {
 
-                if (before.name().equals("DOWN")) {
-                    System.out.println("DIR " +atual.name());
-                    System.out.println("DIR " +before.name());
+                if (b.equals("DOWN")) {
                     cur = Dir.UL;
 
-                } else if (before.name().equals("UP")) {
+                } else if (b.equals("UP")) {
                     cur = Dir.DL;
 
                 }
-            } else if (atual.name().equals("RIGHT")) {
-                if (before.name().equals("DOWN")) {
+            } else if (a.equals("RIGHT")) {
+                if (b.equals("DOWN")) {
                     cur = Dir.UR;
 
-                } else if (before.name().equals("UP")) {
+                } else if (b.equals("UP")) {
                     cur = Dir.DR;
 
                 }

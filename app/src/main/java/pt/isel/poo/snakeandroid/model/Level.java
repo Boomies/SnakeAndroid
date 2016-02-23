@@ -20,6 +20,7 @@ public class Level {
     private Head snake; //Inicialização de um objecto de cabeça da cobra.
     private int increment;    //Número de vértebras iniciais e a serem adicionadas quando a cobra come uma maçã.
     private int maxApples, currentApples; //Número de maçãs máximas num nível e número de maçãs existentes no nível.
+    private int score = 0;
     LinkedList<Snake> members = new LinkedList<>(); //Lista que irá conter a cobra.
     private Mouse mouse;
 
@@ -60,10 +61,10 @@ public class Level {
         }
 
         //Se a direcao atual for inversa a anterior a jogada nao conta
-        if (!(Dir.getOppositeDir(before).name()).equals(dir.name())) {
+        //if (!(Dir.getOppositeDir(before).name()).equals(dir.name())) {
             before = atual;
             atual = dir;
-        }
+        //}
 
         Coordinate dest = snake.getDest(atual); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
@@ -73,6 +74,7 @@ public class Level {
 
         } else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
         {
+            addToScore(board[dest.x][dest.y].getPoints());
             ElementGenerator((board[dest.x][dest.y] instanceof Apple) ? 1 : 2);
             snakeGrow((board[dest.x][dest.y] instanceof Apple));    // ...então come e cresce.
             moveTo(current.x, current.y, dest);
@@ -427,6 +429,8 @@ public class Level {
 
             data.writeUTF(mouse.getDirection().name());
 
+            data.writeInt(scoreCheck());
+
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -434,7 +438,6 @@ public class Level {
             try {
                 data.close();
             } catch (IOException e) {
-                //Merda
             }
         }
     }
@@ -514,6 +517,7 @@ public class Level {
 
             Dir dir = Dir.createDir(data.readUTF());
             mouse.setDirection(dir);
+            addToScore(data.readInt());
         } catch (
                 IOException e
                 )
@@ -533,9 +537,16 @@ public class Level {
     }
 
     public void printMembers() {
-        System.out.println("SIZE = " + members.size());
         for (int i = 0; i < members.size(); i++) {
             System.out.println(members.get(i));
         }
+    }
+
+    public int scoreCheck() {
+        return score;
+    }
+
+    public void addToScore(int i) {
+        score += i;
     }
 }

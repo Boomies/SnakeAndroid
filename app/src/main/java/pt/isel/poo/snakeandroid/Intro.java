@@ -20,6 +20,7 @@ public class Intro extends AppCompatActivity {
 
         final View toAnimate = findViewById(R.id.toAnimate);
         Button play = (Button) findViewById(R.id.play);
+        Button scoreboard = (Button) findViewById(R.id.scoreboard);
 
         play.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,7 +30,17 @@ public class Intro extends AppCompatActivity {
                 Intent it = new Intent(Intro.this, MainActivity.class);
                 startActivity(it);
                 finish();
+            }
+        });
 
+        scoreboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+        public void onClick(View v){
+
+                //Show the scoreboard
+                Intent sc = new Intent(Intro.this, ScoreBoard.class);
+                startActivity(sc);
+                finish();
             }
         });
 

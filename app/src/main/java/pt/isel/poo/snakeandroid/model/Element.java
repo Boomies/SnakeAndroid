@@ -6,12 +6,18 @@ package pt.isel.poo.snakeandroid.model;
 public class Element {
     Coordinate cur; // Coordenada actual do elemento.
     public static Level lvl; // Nível ao qual este elemento est� ligado.
+    public int points;
 
+    public int getPoints() {
+        return points;
+    }
     /**
      * Construtor Element. Cria um elemento na linha x e coluna y.
      * @param x Linha x.
      * @param y Coluna y.
      */
+
+
     public Element(int x, int y) {
         cur = new Coordinate(x, y); // Cria uma nova coordenada.
         setCur(cur.x, cur.y); // Atributi a este objecto essa coordenada.
