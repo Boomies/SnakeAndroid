@@ -61,10 +61,10 @@ public class Level {
         }
 
         //Se a direcao atual for inversa a anterior a jogada nao conta
-        //if (!(Dir.getOppositeDir(before).name()).equals(dir.name())) {
+        if (!Dir.getOppositeDir(atual, dir)) {
             before = atual;
             atual = dir;
-        //}
+        }
 
         Coordinate dest = snake.getDest(atual); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.

@@ -25,13 +25,14 @@ public enum Dir {
     /**
      * Devolve a coordenada oposta a passada em parametro
      */
-    public static Dir getOppositeDir(Dir d) {
-        if (d == Dir.DOWN) return Dir.UP;
-        if (d == Dir.UP) return Dir.DOWN;
-        if (d == Dir.LEFT) return Dir.RIGHT;
-        if (d == Dir.RIGHT) return Dir.LEFT;
+    public static boolean getOppositeDir(Dir atual, Dir nova) {
+        if(atual.name().equals("RIGHT") && nova.name().equals("LEFT")) return true;
+        if(atual.name().equals("LEFT") && nova.name().equals("RIGHT")) return true;
+        if(atual.name().equals("UP") && nova.name().equals("DOWN")) return true;
+        if(atual.name().equals("DOWN") && nova.name().equals("UP")) return true;
 
-        return d;
+        return false;
+
     }
 
     public static Dir correctBodyDir(Dir atual, Dir before) {
