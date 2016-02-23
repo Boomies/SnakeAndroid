@@ -41,7 +41,7 @@ public enum Dir {
         String b = before.name();
 
         if (a.equals(b)) {
-            cur = atual;
+            return atual;
 
         } else {
 

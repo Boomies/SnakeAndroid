@@ -61,10 +61,8 @@ public class Level {
         }
 
         //Se a direcao atual for inversa a anterior a jogada nao conta
-        if (!Dir.getOppositeDir(atual, dir)) {
-            before = atual;
-            atual = dir;
-        }
+        before = atual;
+        atual = !Dir.getOppositeDir(atual, dir) ? dir : atual;
 
         Coordinate dest = snake.getDest(atual); // Coordenada correspondente ao destino, de acordo com a direção.
         Coordinate current = snake.cur; // Coordenada onde a cabeça está antes de se movimentar.
@@ -72,7 +70,7 @@ public class Level {
         if (board[dest.x][dest.y] instanceof Space) { // Se o elemento no destino for um espaço vazio...
             moveTo(current.x, current.y, dest); // ...a cobra move-se para o destino sem problemas.
 
-        } else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
+        }else if (snake.eat(board[dest.x][dest.y])) // Se for possível a cobra comer o elemento na coordenada destino...
         {
             addToScore(board[dest.x][dest.y].getPoints());
             ElementGenerator((board[dest.x][dest.y] instanceof Apple) ? 1 : 2);
@@ -84,7 +82,6 @@ public class Level {
             if (currentApples < 2) ElementGenerator(1); /* ...e se ainda existirem maçãs para comer antes de o nível acabar,
                                                   é gerada uma nova maçã. */
         } else {
-
             endGame();
         } // Caso contrório, o jogo acaba.
     }
