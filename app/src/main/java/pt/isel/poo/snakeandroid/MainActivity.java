@@ -198,12 +198,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     if(maxLevel == cur_level){
                         updateScores();
-                        Toast.makeText(this, "You completed this game", Toast.LENGTH_SHORT).show();
-                        finish();//Closes windows
+                        new AlertDialog.Builder(this)
+                                .setTitle("You did it!")
+                                .setMessage("You finished all the levels!")
+                                .setPositiveButton("Yuppy!!", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent it = new Intent(MainActivity.this, Intro.class);
+                                        startActivity(it);
+                                        MainActivity.this.finish();
+                                    }
+                                })
+                                .setCancelable(false)
+                                .create().show();
                     }else {
                         updateScores();
                         new AlertDialog.Builder(this)
-                                .setTitle("Level complete! Go to next level?")
+                                .setTitle("Level complete!")
+                                .setMessage("Go to the next one?")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -363,8 +375,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             OutputStream out = openFileOutput(FILE_NAME, MODE_PRIVATE);
             file = new BufferedWriter(new OutputStreamWriter(out));
 
-            for (int i = 0; i < scores.length; i++) {
-                file.write(scores[i] + " ");
+            for (int score : scores) {
+                file.write(score + " ");
             }
 
         } catch (IOException e) {
